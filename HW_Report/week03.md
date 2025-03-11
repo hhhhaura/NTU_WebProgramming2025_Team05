@@ -1,8 +1,3 @@
----
-title: Team 5 Week 3 Report
-
----
-
 # Team 5 Week 3 Report
 
 ## Quick Overview
