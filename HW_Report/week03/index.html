@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roommate Accounting</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Roommate Accounting System</h1>
+
+    <!-- Login Box -->
+    <div class="login-box">
+        <form action="#" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Description for First Table -->
+    <p class="table-description">Money Owed Between Roommates</p>
+
+    <!-- Amounts Owed Table -->
+    <table>
+        <tr>
+            <th>Owes \ To</th>
+            <th>Alice</th>
+            <th>Bob</th>
+            <th>Charlie</th>
+        </tr>
+        <tr>
+            <th>Alice owes</th>
+            <td>-</td>
+            <td>$ 20</td>
+            <td>$ -10</td>
+        </tr>
+        <tr>
+            <th>Bob owes</th>
+            <td>-</td>
+            <td>-</td>
+            <td>$ 5</td>
+        </tr>
+        <tr>
+            <th>Charlie owes</th>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>
+    </table>
+
+    <!-- Description for the Total Amount Owed Table -->
+    <p class="table-description">Total Money Owed by Roommates</p>
+
+    <!-- Total Amount Owed Table -->
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Total Owed</th>
+        </tr>
+        <tr>
+            <td>Alice</td>
+            <td>$ 10</td>
+        </tr>
+        <tr>
+            <td>Bob</td>
+            <td>$ 25</td>
+        </tr>
+        <tr>
+            <td>Charlie</td>
+            <td>$ 0</td>
+        </tr>
+    </table>
+
+    <!-- Toggle History Button -->
+    <button id="toggleHistoryBtn" class="toggle-history-btn">Show History</button>
+
+    <!-- History Section (Initially hidden) -->
+    <div id="historySection" class="history-section">
+        <h3>Transaction History</h3>
+        <ul>
+            <li>Alice paid Bob $20 for rent</li>
+            <li>Bob paid Charlie $5 for utilities</li>
+            <li>Alice owes Charlie $10</li>
+        </ul>
+    </div>
+
+    <script>
+        // JavaScript to toggle the visibility of the history section
+        const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
+        const historySection = document.getElementById("historySection");
+
+        toggleHistoryBtn.addEventListener("click", () => {
+            // Toggle the visibility of the history section
+            if (historySection.style.display === "none" || historySection.style.display === "") {
+                historySection.style.display = "block";
+                toggleHistoryBtn.textContent = "Hide History";
+            } else {
+                historySection.style.display = "none";
+                toggleHistoryBtn.textContent = "Show History";
+            }
+        });
+    </script>
+</body>
+</html>
