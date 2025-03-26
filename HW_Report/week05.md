@@ -11,7 +11,7 @@
 * 登入、新增、驗證使用者
 * PixJS 直觀的債務視覺化
 
-[Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345/week03)
+[Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345/week05)
 
 ## 當週主題練習
 ### 使用的 JavaScript 技術
