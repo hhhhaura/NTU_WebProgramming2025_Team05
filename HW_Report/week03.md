@@ -3,7 +3,7 @@
 ## Quick Overview
 本週的主題是 HTML 和 CSS，我們透過製作一個線上多人記帳網站來練習這些技術，確保室友之間的借貸記錄清晰、透明，減少財務上的混亂。另外，我們找了基礎 Javascript 和 HTTPS 連線作為課外練習。
 
-[Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345/week05)
+[Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345/week03)
 
 ## 當週主題練習
 
