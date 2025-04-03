@@ -12,7 +12,7 @@ body {
 h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
-    color: #6a1b9a;
+    color: #1b699a;
     font-size: 3rem;
     margin-top: 20px;
 }
@@ -40,7 +40,7 @@ h1 {
 
 .login-box label {
     font-size: 14px;
-    color: #6a1b9a;
+    color: #1b699a;
 }
 
 .login-box input {
@@ -52,7 +52,7 @@ h1 {
 
 .login-box button {
     padding: 12px;
-    background-color: #6a1b9a;
+    background-color: #1b699a;
     color: white;
     border: none;
     border-radius: 4px;
@@ -62,7 +62,7 @@ h1 {
 }
 
 .login-box button:hover {
-    background-color: #8e24aa;
+    background-color: #3e9cb1;
 }
 
 /* ================================
@@ -83,7 +83,7 @@ th, td {
 }
 
 th {
-    background-color: #6a1b9a;
+    background-color: #1b699a;
     color: white;
 }
 
@@ -100,7 +100,7 @@ tr:nth-child(even) td {
 ================================== */
 .history-section {
     background-color: #f3e5f5;
-    border: 1px solid #ba68c8;
+    border: 1px solid #3e9cb1;
     border-radius: 8px;
     padding: 20px;
     max-width: 600px;
@@ -112,7 +112,7 @@ tr:nth-child(even) td {
 .history-section h3 {
     font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
-    color: #6a1b9a;
+    color: #1b699a;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -124,7 +124,7 @@ tr:nth-child(even) td {
 
 .history-section li {
     background-color: #ffffff;
-    border: 1px solid #ba68c8;
+    border: 1px solid #3e9cb1;
     border-radius: 4px;
     padding: 10px 15px;
     margin: 8px 0;
@@ -141,7 +141,7 @@ tr:nth-child(even) td {
 ================================== */
 .toggle-history-btn {
     font-family: 'Poppins', sans-serif;
-    background-color: #6a1b9a;
+    background-color: #1b699a;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -154,7 +154,7 @@ tr:nth-child(even) td {
 }
 
 .toggle-history-btn:hover {
-    background-color: #8e24aa;
+    background-color: #1b699a;
 }
 
 /* ================================

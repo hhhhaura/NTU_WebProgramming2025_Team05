@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roommate Accounting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Lora&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Roommate Accounting System</h1>
+
+    <!-- Login Box -->
+    <div class="login-box">
+        <form action="#" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div id="totalDebtSection">
+        <h3>Total Debt by Roommates</h3>
+        <table id="totalDebtTable">
+            <!-- Total debt table will be populated here -->
+        </table>
+    
+        <!-- Visualization: SVG Circle Representation -->
+        <div class="circle-container">
+            <div id="pixiCanvasContainer"></div> <!-- PixiJS will render inside this div -->
+        </div>
+    </div>
+    
+
+    <!-- Debt Relations Table -->
+    <h3>Debt Repayment Table</h3>
+    <table id="debtRelationsTable">
+        <!-- Debt relations will be populated here dynamically -->
+    </table>
+
+    <!-- Debt Update Section -->
+    <div id="debtUpdateSection">
+        <h3>Update Debt Between Roommates</h3>
+        <form id="debtUpdateForm">
+            
+            <label for="creditor">From:</label>
+            <select id="creditor">
+                <!-- Options will be populated dynamically -->
+            </select>
+
+            <label for="debtor">To:</label>
+            <select id="debtor">
+                <!-- Options will be populated dynamically -->
+            </select>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" required />
+
+            <button type="submit">Update Debt</button>
+        </form>
+    </div>
+
+
+    <!-- Toggle History Button -->
+    <button id="toggleHistoryBtn" class="toggle-history-btn">Show History</button>
+
+    <!-- History Section (Initially hidden) -->
+    <div id="historySection" class="history-section">
+        <h3>Transaction History</h3>
+        <ul>
+            <!-- History will be populated here dynamically -->
+        </ul>
+    </div>
+
+    <!-- Add PixiJS library -->
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
