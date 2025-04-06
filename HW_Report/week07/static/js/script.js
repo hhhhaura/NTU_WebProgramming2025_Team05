@@ -213,24 +213,30 @@ async function startApplication() {
     usernameInput = document.getElementById("username");
     passwordInput = document.getElementById("password");
 
-    loginButton.addEventListener("click", e => {
+    loginButton.addEventListener("click", async e => {
         e.preventDefault();
-        const name = usernameInput.value;
-        const pass = passwordInput.value;
-        let user = roommates.find(r => r.name === name);
-        if (user) {
-            if (user.password === pass) alert("Login successful");
-            else alert("Incorrect password");
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+            credentials: "include"  // 這很重要：允許 cookie 存在
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            alert("Login successful as " + data.username);
+            usernameInput.value = "";
+            passwordInput.value = "";
+            updateTotalDebtTable();
+            updateDebtRelationsTable();
+            renderDebtorCreditorOptions();
+            history.displayHistory();
         } else {
-            roommates.push(new Roommate(name, pass));
-            alert("New roommate added and logged in!");
+            alert(data.error || "Login failed");
         }
-        usernameInput.value = "";
-        passwordInput.value = "";
-        updateTotalDebtTable();
-        updateDebtRelationsTable();
-        renderDebtorCreditorOptions();
-        history.displayHistory();
     });
 
     document.getElementById("debtUpdateForm").addEventListener("submit", e => {

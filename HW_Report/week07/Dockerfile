@@ -9,6 +9,6 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-EXPOSE 8000
+EXPOSE 80
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "myproject.wsgi:application"]
