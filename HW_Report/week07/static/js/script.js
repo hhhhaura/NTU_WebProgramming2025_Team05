@@ -209,36 +209,6 @@ async function startApplication() {
     await app.init({ width: 800, height: 400, backgroundColor: 0xf4f4f4, resolution: window.devicePixelRatio || 1 });
     document.getElementById("pixiCanvasContainer").appendChild(app.canvas);
 
-    loginButton = document.querySelector(".login-box button");
-    usernameInput = document.getElementById("username");
-    passwordInput = document.getElementById("password");
-
-    loginButton.addEventListener("click", async e => {
-        e.preventDefault();
-        const username = usernameInput.value;
-        const password = passwordInput.value;
-
-        const res = await fetch("/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-            credentials: "include"  // 這很重要：允許 cookie 存在
-        });
-
-        const data = await res.json();
-        if (data.success) {
-            alert("Login successful as " + data.username);
-            usernameInput.value = "";
-            passwordInput.value = "";
-            updateTotalDebtTable();
-            updateDebtRelationsTable();
-            renderDebtorCreditorOptions();
-            history.displayHistory();
-        } else {
-            alert(data.error || "Login failed");
-        }
-    });
-
     document.getElementById("debtUpdateForm").addEventListener("submit", e => {
         e.preventDefault();
         const debtorName = document.getElementById("debtor").value;
