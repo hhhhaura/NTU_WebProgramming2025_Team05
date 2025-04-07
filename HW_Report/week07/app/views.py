@@ -67,9 +67,20 @@ def user_list(request):
 @api_view(['GET'])
 @login_required
 def transaction_list(request):
-    transactions = Transaction.objects.all()
-    serializer = TransactionSerializer(transactions, many=True)
-    return Response(serializer.data)
+    user = request.user
+    transactions = Transaction.objects.filter(
+        creditor=user) | Transaction.objects.filter(debtor=user)
+    transaction_data = []
+    for transaction in transactions:
+        transaction_data.append({
+            'id': transaction.id,
+            'creditor': transaction.creditor.username,
+            'debtor': transaction.debtor.username,
+            'amount': transaction.amount,
+            'description': transaction.description,
+            'created_at': transaction.created_at,
+        })
+    return Response(transaction_data)
 
 
 @api_view(['GET'])

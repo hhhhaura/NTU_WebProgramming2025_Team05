@@ -167,7 +167,10 @@
                     <label for="amount">Amount:</label>
                     <input type="number" id="amount" required />
                 </div>
-
+                <div>
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" required placeholder="Enter a description" />
+                </div>
                 <div>
                     <button type="submit">Add Debt</button>
                 </div>
@@ -178,9 +181,20 @@
         <button id="toggleHistoryBtn">Show Transaction History</button>
         <section id="historySection" class="history-section">
             <h3>Transaction History</h3>
-            <ul id="transactionHistoryList">
-                <!-- History will be populated dynamically -->
-            </ul>
+            <table id="transactionHistoryTable">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionHistoryList">
+                    <!-- Transaction history will be populated here -->
+                </tbody>
+            </table>
         </section>
     </div>
 
@@ -193,6 +207,7 @@
             const creditorSelect = document.getElementById('creditor');
             const debtorSelect = document.getElementById('debtor');
             const amountInput = document.getElementById('amount');
+            const descriptionInput = document.getElementById('description');
             const debtRelationsTable = document.getElementById('debtRelationsTable');
             const transactionHistoryList = document.getElementById('transactionHistoryList');
 
@@ -249,6 +264,7 @@
                 const creditor = creditorSelect.value;
                 const debtor = debtorSelect.value;
                 const amount = parseInt(amountInput.value);
+                const description = descriptionInput.value;
 
                 if (creditor === debtor) {
                     Swal.fire({
@@ -268,19 +284,66 @@
                             'Content-Type': 'application/json',
                             'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        body: JSON.stringify({ creditor, debtor, amount })
+                        body: JSON.stringify({ creditor, debtor, amount, description })
                     })
                         .then(response => response.json())
                         .then(data => {
                             updateDebtRelationsTable();
+                            fetchTransactionHistory();
                             amountInput.value = '';
+                            descriptionInput.value = '';
                         });
                 }
             });
 
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                const seconds = date.getSeconds().toString().padStart(2, '0');
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+
             toggleHistoryBtn.addEventListener('click', function () {
                 historySection.style.display = historySection.style.display === 'block' ? 'none' : 'block';
+                if (historySection.style.display === 'block') {
+                    fetchTransactionHistory();
+                }
             });
+
+            function fetchTransactionHistory() {
+                fetch('/api/transactions/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        transactionHistoryList.innerHTML = ''; // Clear the list before adding new data
+
+                        data.forEach(transaction => {
+                            const row = document.createElement('tr');  // Create a new row for each transaction
+
+                            row.innerHTML = `
+                                <td>${transaction.creditor}</td>
+                                <td>${transaction.debtor}</td>
+                                <td>${transaction.amount}</td>
+                                <td>${transaction.description}</td>
+                                <td>${formatDate(transaction.created_at)}</td>
+                            `;
+
+                            transactionHistoryList.appendChild(row);  // Append the new row to the table
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching transaction history:', error);
+                    });
+            }
 
             const app = new PIXI.Application({ width: 300, height: 300 });
             document.getElementById('pixiCanvasContainer').appendChild(app.view);
