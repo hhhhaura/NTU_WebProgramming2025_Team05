@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .models import Transaction
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,3 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['id', 'creditor', 'debtor',
+                  'amount', 'description', 'created_at']

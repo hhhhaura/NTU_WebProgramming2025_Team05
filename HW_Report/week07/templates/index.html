@@ -1,71 +1,305 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roommate Accounting</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Lora&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Roommate Accounting System</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Lora&display=swap"
+        rel="stylesheet">
+    <style>
+        /* General Reset and Basic Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            margin: 1rem 0;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f8f8;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        .history-section {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        .history-section ul {
+            list-style-type: none;
+        }
+
+        .history-section li {
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #debtAddForm div {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+
+        #debtAddForm label {
+            margin-top: 10px;
+            display: block;
+        }
+
+        #debtAddForm select,
+        #debtAddForm input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Roommate Accounting System</h1>
+    <div class="container">
+        <header>
+            <h1>Roommate Accounting System</h1>
+        </header>
 
-    <div id="totalDebtSection">
-        <h3>Total Debt by Roommates</h3>
-        <table id="totalDebtTable">
-            <!-- Total debt table will be populated here -->
-        </table>
-    
-        <!-- Visualization: SVG Circle Representation -->
-        <div class="circle-container">
-            <div id="pixiCanvasContainer"></div> <!-- PixiJS will render inside this div -->
-        </div>
+        <!-- Total Debt Section -->
+        <section id="totalDebtSection">
+            <h2>Roommates Total Debt</h2>
+            <table id="totalDebtTable">
+                <!-- Total Debt Table will be populated here -->
+            </table>
+            <div class="circle-container">
+                <div id="pixiCanvasContainer"></div> <!-- PixiJS render area -->
+            </div>
+        </section>
+
+        <!-- Debt Relations Section -->
+        <section id="debtRelationsSection">
+            <h2>Debt Relationships</h2>
+            <table id="debtRelationsTable">
+                <!-- Debt relations will be populated dynamically -->
+            </table>
+        </section>
+
+        <!-- Debt Update Section -->
+        <section id="debtAddSection">
+            <h2>Add Debt</h2>
+            <form id="debtAddForm" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+                <div>
+                    <label for="creditor">From:</label>
+                    <select id="creditor" required></select>
+                </div>
+
+                <div>
+                    <label for="debtor">To:</label>
+                    <select id="debtor" required></select>
+                </div>
+
+                <div>
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" required />
+                </div>
+
+                <div>
+                    <button type="submit">Add Debt</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- History Section -->
+        <button id="toggleHistoryBtn">Show Transaction History</button>
+        <section id="historySection" class="history-section">
+            <h3>Transaction History</h3>
+            <ul id="transactionHistoryList">
+                <!-- History will be populated dynamically -->
+            </ul>
+        </section>
     </div>
-    
 
-    <!-- Debt Relations Table -->
-    <h3>Debt Repayment Table</h3>
-    <table id="debtRelationsTable">
-        <!-- Debt relations will be populated here dynamically -->
-    </table>
-
-    <!-- Debt Update Section -->
-    <div id="debtUpdateSection">
-        <h3>Update Debt Between Roommates</h3>
-        <form id="debtUpdateForm">
-            
-            <label for="creditor">From:</label>
-            <select id="creditor">
-                <!-- Options will be populated dynamically -->
-            </select>
-
-            <label for="debtor">To:</label>
-            <select id="debtor">
-                <!-- Options will be populated dynamically -->
-            </select>
-
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" required />
-
-            <button type="submit">Update Debt</button>
-        </form>
-    </div>
-
-
-    <!-- Toggle History Button -->
-    <button id="toggleHistoryBtn" class="toggle-history-btn">Show History</button>
-
-    <!-- History Section (Initially hidden) -->
-    <div id="historySection" class="history-section">
-        <h3>Transaction History</h3>
-        <ul>
-            <!-- History will be populated here dynamically -->
-        </ul>
-    </div>
-
-    <!-- Add PixiJS library -->
     <script src="https://pixijs.download/release/pixi.js"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const debtAddForm = document.getElementById('debtAddForm');
+            const toggleHistoryBtn = document.getElementById('toggleHistoryBtn');
+            const historySection = document.getElementById('historySection');
+            const creditorSelect = document.getElementById('creditor');
+            const debtorSelect = document.getElementById('debtor');
+            const amountInput = document.getElementById('amount');
+            const debtRelationsTable = document.getElementById('debtRelationsTable');
+            const transactionHistoryList = document.getElementById('transactionHistoryList');
+
+            // Fetch users (roommates) from API
+            fetch('/api/users/')  // Endpoint to get the list of users
+                .then(response => response.json())
+                .then(data => {
+                    // Populate creditor and debtor dropdowns with fetched data
+                    data.users.forEach(user => {
+                        let option1 = document.createElement('option');
+                        option1.value = user.id;  // Use user ID instead of username
+                        option1.textContent = user.username;
+                        creditorSelect.appendChild(option1);
+
+                        let option2 = document.createElement('option');
+                        option2.value = user.id;  // Use user ID instead of username
+                        option2.textContent = user.username;
+                        debtorSelect.appendChild(option2);
+                    });
+                });
+
+            // Fetch debt relations from API
+            function updateDebtRelationsTable() {
+                fetch('/api/debt-relations/')  // Endpoint to get debt relations
+                    .then(response => response.json())
+                    .then(data => {
+                        debtRelationsTable.innerHTML = `
+                            <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        `;
+
+                        const tbody = debtRelationsTable.querySelector('tbody');
+
+                        data.forEach(history => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${history.from}</td>
+                                <td>${history.to}</td>
+                                <td>${history.amount}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+
+                    });
+            }
+            updateDebtRelationsTable();
+
+            // Handle debt update form submission
+            debtAddForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const creditor = creditorSelect.value;
+                const debtor = debtorSelect.value;
+                const amount = parseInt(amountInput.value);
+
+                if (creditor === debtor) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'From 和 To 不能是同一個人！',
+                        confirmButtonText: '確認',
+                        confirmButtonColor: '#4a90e2'
+                    });
+                    return;
+                }
+
+                if (creditor && debtor && amount) {
+                    // Call API to update debt using user IDs
+                    fetch('/api/transactions/create/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ creditor, debtor, amount })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            updateDebtRelationsTable();
+                            amountInput.value = ''; // Clear input field
+                        });
+                }
+            });
+
+            // Toggle transaction history visibility
+            toggleHistoryBtn.addEventListener('click', function () {
+                historySection.style.display = historySection.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Add PixiJS visualization (SVG circle as an example)
+            const app = new PIXI.Application({ width: 300, height: 300 });
+            document.getElementById('pixiCanvasContainer').appendChild(app.view);
+
+            const circle = new PIXI.Graphics();
+            circle.beginFill(0x66CCFF);
+            circle.drawCircle(150, 150, 100);
+            circle.endFill();
+            app.stage.addChild(circle);
+        });
+    </script>
 </body>
+
 </html>
