@@ -1,3 +1,4 @@
+name: ntu_web
 services:
   web:
     build: .
@@ -10,7 +11,8 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     # remove this in production
     command: ["python", "manage.py", "runserver", "0.0.0.0:80"]
 
@@ -22,7 +24,6 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
-    # make django wait until mysql is up
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
       start_period: 5s
