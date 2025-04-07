@@ -35,6 +35,9 @@ ALLOWED_HOSTS = [
     '.orb.local',  # OrbStack
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.orb.local',  # OrbStack
+]
 
 # Application definition
 
