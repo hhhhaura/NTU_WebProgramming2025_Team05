@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Lora&display=swap"
         rel="stylesheet">
     <style>
-        /* General Reset and Basic Styles */
         * {
             margin: 0;
             padding: 0;
@@ -197,27 +196,24 @@
             const debtRelationsTable = document.getElementById('debtRelationsTable');
             const transactionHistoryList = document.getElementById('transactionHistoryList');
 
-            // Fetch users (roommates) from API
-            fetch('/api/users/')  // Endpoint to get the list of users
+            fetch('/api/users/')
                 .then(response => response.json())
                 .then(data => {
-                    // Populate creditor and debtor dropdowns with fetched data
                     data.users.forEach(user => {
                         let option1 = document.createElement('option');
-                        option1.value = user.id;  // Use user ID instead of username
+                        option1.value = user.id;
                         option1.textContent = user.username;
                         creditorSelect.appendChild(option1);
 
                         let option2 = document.createElement('option');
-                        option2.value = user.id;  // Use user ID instead of username
+                        option2.value = user.id;
                         option2.textContent = user.username;
                         debtorSelect.appendChild(option2);
                     });
                 });
 
-            // Fetch debt relations from API
             function updateDebtRelationsTable() {
-                fetch('/api/debt-relations/')  // Endpoint to get debt relations
+                fetch('/api/debt-relations/')
                     .then(response => response.json())
                     .then(data => {
                         debtRelationsTable.innerHTML = `
@@ -247,7 +243,6 @@
             }
             updateDebtRelationsTable();
 
-            // Handle debt update form submission
             debtAddForm.addEventListener('submit', function (e) {
                 e.preventDefault();
 
@@ -267,7 +262,6 @@
                 }
 
                 if (creditor && debtor && amount) {
-                    // Call API to update debt using user IDs
                     fetch('/api/transactions/create/', {
                         method: 'POST',
                         headers: {
@@ -279,17 +273,15 @@
                         .then(response => response.json())
                         .then(data => {
                             updateDebtRelationsTable();
-                            amountInput.value = ''; // Clear input field
+                            amountInput.value = '';
                         });
                 }
             });
 
-            // Toggle transaction history visibility
             toggleHistoryBtn.addEventListener('click', function () {
                 historySection.style.display = historySection.style.display === 'block' ? 'none' : 'block';
             });
 
-            // Add PixiJS visualization (SVG circle as an example)
             const app = new PIXI.Application({ width: 300, height: 300 });
             document.getElementById('pixiCanvasContainer').appendChild(app.view);
 
