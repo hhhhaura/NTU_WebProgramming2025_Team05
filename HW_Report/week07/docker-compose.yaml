@@ -6,10 +6,13 @@ services:
       - "8000:80"
     env_file:
       - .env
+    # remove this in production
     volumes:
       - .:/app
     depends_on:
       - db
+    # remove this in production
+    command: ["python", "manage.py", "runserver", "0.0.0.0:80"]
 
   db:
     image: mysql:8.0
@@ -19,6 +22,13 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
+    # make django wait until mysql is up
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
 volumes:
   db_data:
