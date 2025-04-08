@@ -59,12 +59,28 @@
             border: 1px solid #ddd;
         }
 
-        th {
+        /* th {
             background-color: #f8f8f8;
+        } */
+        table thead {
+            background-color: #6a1b9a;
+            color: white;
         }
 
+        table tbody tr:nth-child(even) {
+            background-color: #f5e1f7;
+            color: #000;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background-color: white;
+            color: #000;
+        }
+
+
+
         button {
-            background-color: #4a90e2;
+            background-color: #6a1b9a;
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
@@ -74,8 +90,14 @@
             transition: background-color 0.3s ease;
         }
 
+        section h2,
+        header h1 {
+            color: #6a1b9a;
+        }
+
+
         button:hover {
-            background-color: #357ABD;
+            background-color: #6a1b9a;
         }
 
         .history-section {
@@ -113,6 +135,15 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+
+        #pixiCanvasContainer canvas {
+            max-width: 100%;
+            height: auto !important;
+            display: block;
+            margin: 0 auto;
+        }
+
+
 
         .circle-container {
             display: flex;
@@ -204,7 +235,7 @@
 
     <script src="https://pixijs.download/release/pixi.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             const debtAddForm = document.getElementById('debtAddForm');
             const toggleHistoryBtn = document.getElementById('toggleHistoryBtn');
             const historySection = document.getElementById('historySection');
@@ -214,6 +245,16 @@
             const descriptionInput = document.getElementById('description');
             const debtRelationsTable = document.getElementById('debtRelationsTable');
             const transactionHistoryList = document.getElementById('transactionHistoryList');
+            const app = new PIXI.Application();
+            await app.init({
+                height: 250,
+                backgroundColor: 0xf4f4f4,
+                resolution: window.devicePixelRatio || 1,
+            });
+
+            document.getElementById('pixiCanvasContainer').appendChild(app.view);
+
+
 
             fetch('/api/users/')
                 .then(response => response.json())
@@ -285,12 +326,14 @@
                         const circle = new PIXI.Graphics();
                         circle.beginFill(color).drawCircle(0, 0, radius).endFill();
 
+                        const fontSize = Math.max(8, radius * 0.25);
                         const label = new PIXI.Text(`${user.username}\n$${debt}`, {
                             fontFamily: 'Poppins',
-                            fontSize: 14,
+                            fontSize: fontSize,
                             fill: debt < 0 ? '#fff' : '#000',
                             align: 'center'
                         });
+
                         label.anchor.set(0.5);
 
                         const group = new PIXI.Container();
@@ -308,10 +351,11 @@
                 });
             }
 
-            function radiusScale(debt, maxDebt, base = 1.8, scale = 20, minR = 25, maxR = 80) {
+            function radiusScale(debt, maxDebt, base = 1.6, scale = 14, minR = 20, maxR = 50) {
                 const magnitude = -debt / maxDebt;
                 return Math.min(minR + Math.pow(base, magnitude) * scale, maxR);
             }
+
 
             function resolveCircleCollisions(circles, iterations = 30) {
                 for (let i = 0; i < iterations; i++) {
@@ -344,7 +388,7 @@
 
             updateDebtRelationsTable();
             fetchTotalDebtTable();
-            // updateDebtVisualization();
+            updateDebtVisualization();
 
             function fetchTotalDebtTable() {
                 fetch('/api/total-debts/', {
@@ -415,7 +459,7 @@
                             updateDebtRelationsTable();
                             fetchTransactionHistory();
                             fetchTotalDebtTable();
-                            // updateDebtVisualization();
+                            updateDebtVisualization();
                             amountInput.value = '';
                             descriptionInput.value = '';
                         });
@@ -471,14 +515,6 @@
                     });
             }
 
-            const app = new PIXI.Application({ width: 600, height: 600 });
-            document.getElementById('pixiCanvasContainer').appendChild(app.view);
-
-            // const circle = new PIXI.Graphics();
-            // circle.beginFill(0x66CCFF);
-            // circle.drawCircle(150, 150, 100);
-            // circle.endFill();
-            // app.stage.addChild(circle);
         });
     </script>
 </body>
