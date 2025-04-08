@@ -36,4 +36,4 @@ Below are the details of our assignments, including descriptions and demo links.
 To explore or run the projects locally:
 1. Clone this repository:
    ```bash
-   git clone [<repository-url>](https://github.com/hhhhaura/NTU_WebProgramming2025_Team05.git)
+   git clone https://github.com/hhhhaura/NTU_WebProgramming2025_Team05.git
