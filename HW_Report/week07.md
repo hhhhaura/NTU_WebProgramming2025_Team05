@@ -12,6 +12,7 @@
 * 靜態檔案服務與壓縮（Whitenoise）
 
 [Week 7 Demo Link](https://hsinchu-huang-147.tplinkdns.com:12346)
+
 [Assignment Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345)
 
 
