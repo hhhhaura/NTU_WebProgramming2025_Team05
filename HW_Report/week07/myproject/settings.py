@@ -32,6 +32,8 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
+    'hsinchu-huang-147.tplinkdns.com',
+    'hyperactive.ddns.net',
     '.orb.local',  # OrbStack
 ]
 
