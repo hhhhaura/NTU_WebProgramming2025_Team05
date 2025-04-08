@@ -4,16 +4,16 @@ Welcome to the GitHub repository for our assignments in the NTU CSIE Web Program
 
 ## About This Project
 
-This repository is maintained by a group of students from National Taiwan University (NTU) enrolled in the Computer Science and Information Engineering (CSIE) department. Our assignments focus on building an online expense tracking system for roommates, progressively enhanced with front-end and back-end technologies.
+Our assignments focus on building an online expense tracking system for roommates, progressively enhanced with front-end and back-end technologies.
 
 ### Group Members
 
 | Name       | Student ID |
 |------------|------------|
-| 黃邦維 (Huang Bangwei) | b10902039  |
-| 鄭允臻 (Zheng Yunzhen) | b11902010  |
-| 黃梓宏 (Huang Zihong)  | b11902023  |
-| 吳柏毅 (Wu Boyi)      | b11902127  |
+| 黃邦維 | b10902039  |
+| 鄭允臻 | b11902010  |
+| 黃梓宏 | b11902023  |
+| 吳柏毅 | b11902127  |
 
 ## Assignments
 
