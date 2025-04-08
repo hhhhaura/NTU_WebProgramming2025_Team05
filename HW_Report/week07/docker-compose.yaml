@@ -8,13 +8,13 @@ services:
     env_file:
       - .env
     # remove this in production
-    volumes:
-      - .:/app
+    # volumes:
+    #   - .:/app
     depends_on:
       db:
         condition: service_healthy
     # remove this in production
-    command: ["python", "manage.py", "runserver", "0.0.0.0:80"]
+    # command: ["python", "manage.py", "runserver", "0.0.0.0:80"]
 
   db:
     image: mysql:8.0
