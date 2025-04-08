@@ -11,7 +11,7 @@
 * Docker 容器化部署（Django + Gunicorn + MySQL）
 * 靜態檔案服務與壓縮（Whitenoise）
 
-
+[Demo Link](https://hsinchu-huang-147.tplinkdns.com:12346)
 
 ## 當週主題練習
 
