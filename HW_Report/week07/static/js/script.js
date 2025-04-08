@@ -77,16 +77,40 @@ const historySection = document.getElementById("historySection");
 // ===============================
 // UI Update Functions
 // ===============================
+// function updateTotalDebtTable() {
+//     const table = document.getElementById("totalDebtTable");
+//     table.innerHTML = "<tr><th>Name</th><th>Total Debt</th></tr>";
+//     roommates.forEach(r => {
+//         const row = table.insertRow();
+//         row.insertCell(0).textContent = r.name;
+//         row.insertCell(1).textContent = `$ ${r.getTotalDebt()}`;
+//     });
+//     updateDebtVisualization();
+// }
 function updateTotalDebtTable() {
-    const table = document.getElementById("totalDebtTable");
-    table.innerHTML = "<tr><th>Name</th><th>Total Debt</th></tr>";
-    roommates.forEach(r => {
-        const row = table.insertRow();
-        row.insertCell(0).textContent = r.name;
-        row.insertCell(1).textContent = `$ ${r.getTotalDebt()}`;
-    });
-    updateDebtVisualization();
+    console.log("[DEBUG] Calling /api/total-debts/");
+
+    fetch('/api/total-debts/')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.getElementById("totalDebtTable");
+            table.innerHTML = `
+                <tr>
+                    <th>Name</th>
+                    <th>Total Debt</th>
+                </tr>
+            `;
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>$ ${user.total_debt}</td>
+                `;
+                table.appendChild(row);
+            });
+        });
 }
+
 
 function updateDebtRelationsTable() {
     const table = document.getElementById("debtRelationsTable");
@@ -128,46 +152,89 @@ function radiusScale(debt, maxDebt, base = 1.8, scale = 20, minR = 25, maxR = 80
     const magnitude = -debt / maxDebt;
     return Math.min(minR + Math.pow(base, magnitude) * scale, maxR);
 }
-
 function updateDebtVisualization() {
-    if (circleContainer) app.stage.removeChild(circleContainer);
-    circleContainer = new PIXI.Container();
-    app.stage.addChild(circleContainer);
-    const maxDebt = Math.max(...roommates.map(r => Math.abs(r.getTotalDebt())), 1);
+    fetch('/api/total-debts/')
+        .then(res => res.json())
+        .then(data => {
+            if (circleContainer) app.stage.removeChild(circleContainer);
+            circleContainer = new PIXI.Container();
+            app.stage.addChild(circleContainer);
 
-    const sorted = [...roommates].sort((a, b) => Math.abs(a.getTotalDebt()) - Math.abs(b.getTotalDebt()));
-    const circles = [];
+            const maxDebt = Math.max(...data.map(u => Math.abs(u.total_debt)), 1);
+            const sorted = [...data].sort((a, b) => Math.abs(a.total_debt) - Math.abs(b.total_debt));
+            const circles = [];
 
-    sorted.forEach(r => {
-        const debt = r.getTotalDebt();
-        const radius = radiusScale(debt, maxDebt);
-        const color = debt < 0 ? 0x991f9f : 0x1c98a5;
+            sorted.forEach(user => {
+                const debt = user.total_debt;
+                const radius = radiusScale(debt, maxDebt);
+                const color = debt < 0 ? 0x991f9f : 0x1c98a5;
 
-        const circle = new PIXI.Graphics();
-        circle.beginFill(color).drawCircle(0, 0, radius).endFill();
+                const circle = new PIXI.Graphics();
+                circle.beginFill(color).drawCircle(0, 0, radius).endFill();
 
-        const label = new PIXI.Text(`${r.name}\n$${debt}`, {
-            fontFamily: 'Poppins', fontSize: 14, fill: debt < 0 ? '#fff' : '#000', align: 'center'
+                const label = new PIXI.Text(`${user.username}\n$${debt}`, {
+                    fontFamily: 'Poppins', fontSize: 14, fill: debt < 0 ? '#fff' : '#000', align: 'center'
+                });
+                label.anchor.set(0.5);
+
+                const group = new PIXI.Container();
+                group.addChild(circle);
+                group.addChild(label);
+                group.x = app.screen.width / 2 + (Math.random() * 10 - 5);
+                group.y = app.screen.height / 2 + (Math.random() * 10 - 5);
+                group.radius = radius;
+                group.interactive = true;
+                group.buttonMode = true;
+                group.on('pointerdown', onDragStart).on('pointerup', onDragEnd).on('pointermove', onDragMove);
+
+                circles.push(group);
+                circleContainer.addChild(group);
+            });
+
+            resolveCircleCollisions(circles);
+            scaleToFitContainer(circleContainer, app.screen.width, app.screen.height);
         });
-        label.anchor.set(0.5);
-
-        const group = new PIXI.Container();
-        group.addChild(circle);
-        group.addChild(label);
-        group.x = app.screen.width / 2 + (Math.random() * 10 - 5);
-        group.y = app.screen.height / 2 + (Math.random() * 10 - 5);
-        group.radius = radius;
-        group.interactive = true;
-        group.buttonMode = true;
-        group.on('pointerdown', onDragStart).on('pointerup', onDragEnd).on('pointermove', onDragMove);
-
-        circles.push(group);
-        circleContainer.addChild(group);
-    });
-
-    resolveCircleCollisions(circles);
-    scaleToFitContainer(circleContainer, app.screen.width, app.screen.height);
 }
+
+// function updateDebtVisualization() {
+//     if (circleContainer) app.stage.removeChild(circleContainer);
+//     circleContainer = new PIXI.Container();
+//     app.stage.addChild(circleContainer);
+//     const maxDebt = Math.max(...roommates.map(r => Math.abs(r.getTotalDebt())), 1);
+
+//     const sorted = [...roommates].sort((a, b) => Math.abs(a.getTotalDebt()) - Math.abs(b.getTotalDebt()));
+//     const circles = [];
+
+//     sorted.forEach(r => {
+//         const debt = r.getTotalDebt();
+//         const radius = radiusScale(debt, maxDebt);
+//         const color = debt < 0 ? 0x991f9f : 0x1c98a5;
+
+//         const circle = new PIXI.Graphics();
+//         circle.beginFill(color).drawCircle(0, 0, radius).endFill();
+
+//         const label = new PIXI.Text(`${r.name}\n$${debt}`, {
+//             fontFamily: 'Poppins', fontSize: 14, fill: debt < 0 ? '#fff' : '#000', align: 'center'
+//         });
+//         label.anchor.set(0.5);
+
+//         const group = new PIXI.Container();
+//         group.addChild(circle);
+//         group.addChild(label);
+//         group.x = app.screen.width / 2 + (Math.random() * 10 - 5);
+//         group.y = app.screen.height / 2 + (Math.random() * 10 - 5);
+//         group.radius = radius;
+//         group.interactive = true;
+//         group.buttonMode = true;
+//         group.on('pointerdown', onDragStart).on('pointerup', onDragEnd).on('pointermove', onDragMove);
+
+//         circles.push(group);
+//         circleContainer.addChild(group);
+//     });
+
+//     resolveCircleCollisions(circles);
+//     scaleToFitContainer(circleContainer, app.screen.width, app.screen.height);
+// }
 
 function resolveCircleCollisions(circles, iterations = 30) {
     for (let i = 0; i < iterations; i++) {
@@ -207,8 +274,9 @@ function onDragMove() { if (this.dragging) { const p = this.data.getLocalPositio
 // ===============================
 async function startApplication() {
     await app.init({ width: 800, height: 400, backgroundColor: 0xf4f4f4, resolution: window.devicePixelRatio || 1 });
+    updateTotalDebtTable()
     document.getElementById("pixiCanvasContainer").appendChild(app.canvas);
-
+    
     document.getElementById("debtUpdateForm").addEventListener("submit", e => {
         e.preventDefault();
         const debtorName = document.getElementById("debtor").value;
@@ -220,6 +288,7 @@ async function startApplication() {
             debtor.updateDebt(creditor, amount);
             updateTotalDebtTable();
             updateDebtRelationsTable();
+            updateDebtVisualization();
             history.displayHistory();
         }
     });
@@ -227,6 +296,7 @@ async function startApplication() {
     updateTotalDebtTable();
     updateDebtRelationsTable();
     renderDebtorCreditorOptions();
+    updateDebtVisualization();
     history.displayHistory();
 }
 
