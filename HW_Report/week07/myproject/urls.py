@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/transactions/create/', transaction_create),
     path('api/transactions/update/<int:pk>/', transaction_update),
     path('api/debt-relations/', debt_relation_get),
+    path('api/total-debts/', total_debt_view),
 ]

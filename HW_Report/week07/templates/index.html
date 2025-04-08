@@ -118,9 +118,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 300px;
-            margin-top: 2rem;
+            margin-top: 1rem;
+            padding: 1rem 0;
+            background-color: #fafafa;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
+
     </style>
 </head>
 
@@ -256,7 +260,127 @@
 
                     });
             }
+
+            function updateDebtVisualization() {
+                fetch('/api/total-debts/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (app.stage.children.length > 0) app.stage.removeChildren();
+
+                    const maxDebt = Math.max(...data.map(u => Math.abs(u.total_debt)), 1);
+                    const circles = [];
+
+                    data.forEach(user => {
+                        const debt = user.total_debt;
+                        const radius = radiusScale(debt, maxDebt);
+                        const color = debt < 0 ? 0x991f9f : 0x1c98a5;
+
+                        const circle = new PIXI.Graphics();
+                        circle.beginFill(color).drawCircle(0, 0, radius).endFill();
+
+                        const label = new PIXI.Text(`${user.username}\n$${debt}`, {
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fill: debt < 0 ? '#fff' : '#000',
+                            align: 'center'
+                        });
+                        label.anchor.set(0.5);
+
+                        const group = new PIXI.Container();
+                        group.addChild(circle);
+                        group.addChild(label);
+                        group.x = app.screen.width / 2 + (Math.random() * 80 - 40);
+                        group.y = app.screen.height / 2 + (Math.random() * 80 - 40);
+                        group.radius = radius;
+                        circles.push(group);
+                        app.stage.addChild(group);
+                    });
+
+                    resolveCircleCollisions(circles);
+                    scaleToFitContainer(app.stage, app.screen.width, app.screen.height);
+                });
+            }
+
+            function radiusScale(debt, maxDebt, base = 1.8, scale = 20, minR = 25, maxR = 80) {
+                const magnitude = -debt / maxDebt;
+                return Math.min(minR + Math.pow(base, magnitude) * scale, maxR);
+            }
+
+            function resolveCircleCollisions(circles, iterations = 30) {
+                for (let i = 0; i < iterations; i++) {
+                    for (let a = 0; a < circles.length; a++) {
+                        for (let b = a + 1; b < circles.length; b++) {
+                            const A = circles[a], B = circles[b];
+                            const dx = B.x - A.x, dy = B.y - A.y;
+                            const dist = Math.hypot(dx, dy);
+                            const minDist = A.radius + B.radius + 4;
+                            if (dist < minDist) {
+                                const angle = Math.atan2(dy, dx);
+                                const shift = (minDist - dist) / 2;
+                                A.x -= Math.cos(angle) * shift;
+                                A.y -= Math.sin(angle) * shift;
+                                B.x += Math.cos(angle) * shift;
+                                B.y += Math.sin(angle) * shift;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function scaleToFitContainer(container, maxW, maxH) {
+                const bounds = container.getLocalBounds();
+                const scale = Math.min(maxW / bounds.width, maxH / bounds.height, 1);
+                container.scale.set(scale);
+                container.x = (maxW - bounds.width * scale) / 2 - bounds.x * scale;
+                container.y = (maxH - bounds.height * scale) / 2 - bounds.y * scale;
+            }
+
             updateDebtRelationsTable();
+            fetchTotalDebtTable();
+            // updateDebtVisualization();
+
+            function fetchTotalDebtTable() {
+                fetch('/api/total-debts/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById("totalDebtTable");
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Total Debt</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    `;
+
+                    const tbody = table.querySelector('tbody');
+                    data.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.username}</td>
+                            <td>$${user.total_debt}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching total debts:', error));
+            }
+
 
             debtAddForm.addEventListener('submit', function (e) {
                 e.preventDefault();
@@ -290,6 +414,8 @@
                         .then(data => {
                             updateDebtRelationsTable();
                             fetchTransactionHistory();
+                            fetchTotalDebtTable();
+                            // updateDebtVisualization();
                             amountInput.value = '';
                             descriptionInput.value = '';
                         });
@@ -345,14 +471,14 @@
                     });
             }
 
-            const app = new PIXI.Application({ width: 300, height: 300 });
+            const app = new PIXI.Application({ width: 600, height: 600 });
             document.getElementById('pixiCanvasContainer').appendChild(app.view);
 
-            const circle = new PIXI.Graphics();
-            circle.beginFill(0x66CCFF);
-            circle.drawCircle(150, 150, 100);
-            circle.endFill();
-            app.stage.addChild(circle);
+            // const circle = new PIXI.Graphics();
+            // circle.beginFill(0x66CCFF);
+            // circle.drawCircle(150, 150, 100);
+            // circle.endFill();
+            // app.stage.addChild(circle);
         });
     </script>
 </body>

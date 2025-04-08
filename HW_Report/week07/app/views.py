@@ -168,3 +168,24 @@ def debt_relation_get(request):
             j += 1
 
     return Response(simplified_transactions, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@login_required
+def total_debt_view(request):
+    transactions = Transaction.objects.all()
+    net_balance = defaultdict(float)
+
+    for transaction in transactions:
+        creditor = transaction.creditor.username
+        debtor = transaction.debtor.username
+        amount = float(transaction.amount)
+        net_balance[creditor] += amount
+        net_balance[debtor] -= amount
+
+    result = [
+        {"username": username, "total_debt": round(balance, 2)}
+        for username, balance in net_balance.items()
+    ]
+
+    return Response(result, status=status.HTTP_200_OK)
