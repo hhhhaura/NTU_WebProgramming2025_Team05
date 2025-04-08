@@ -37,6 +37,7 @@
 - **docker-compose.yml**：定義 `web`（Django + Gunicorn）與 `db`（MySQL）服務，設定 `depends_on` 與 healthcheck  
 - **Whitenoise**：在 `MIDDLEWARE` 中加入 `WhiteNoiseMiddleware`，提供壓縮後的靜態檔案  
 
+## 額外練習
 ### 前端認證與 CSRF 處理
 - Login/Register 頁面使用 `fetch` 搭配 `getCookie("csrftoken")` 傳送 POST 請求  
 - `.notification` 顯示失敗訊息  
@@ -44,7 +45,11 @@
 
 ## 分工情形  
 組別：第五組  
-- 黃邦維 (b10902039)：25% Dockerfile & Docker Compose 容器化部署  
-- 鄭允臻 (b11902010)：25% MySQL 資料庫設定與 Django settings  
-- 黃梓宏 (b11902023)：25% REST API Views 與債務計算邏輯  
-- 吳柏毅 (b11902127)：25% 前端登入/註冊模板與 CSRF 整合  
+- 黃邦維 (b10902039)：25% 
+    - Dockerfile & Docker Compose 容器化部署  
+- 鄭允臻 (b11902010)：25% 
+    - MySQL 資料庫設定與 Django settings  
+- 黃梓宏 (b11902023)：25% 
+    - REST API Views 與債務計算邏輯  
+- 吳柏毅 (b11902127)：25% 
+    - 前端登入/註冊模板與 CSRF 整合  
