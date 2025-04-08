@@ -32,6 +32,38 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
+        .header-with-logout {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .header-with-logout h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #6a1b9a;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 12px; /* ⬅️ 原本是 0，現在往下移一點 */
+            right: 0;
+            background-color: #6a1b9a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .logout-btn:hover {
+            background-color: #4a0072;
+        }
+
+
+
         header {
             text-align: center;
             margin-bottom: 2rem;
@@ -161,9 +193,13 @@
 
 <body>
     <div class="container">
-        <header>
+        <header class="header-with-logout">
             <h1>Roommate Accounting System</h1>
+            <button onclick="window.location.href='/login'" class="logout-btn">Logout</button>
         </header>
+        
+        
+        
 
         <!-- Total Debt Section -->
         <section id="totalDebtSection">
