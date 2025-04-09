@@ -52,6 +52,14 @@
 
 - 使用 `.env` 檔案儲存 Django, MySQL 的設定，在容器啟動時載入，更有彈性。
 
+### docker buildx
+
+```
+docker buildx build --platform linux/amd64,linux/arm64 -t zionh/ntu_web_programming:latest --push .
+```
+
+- 建立多種架構的 image，提升相容性
+
 ## Docker 啟動方式
 
 Image: https://hub.docker.com/r/zionh/ntu_web_programming
