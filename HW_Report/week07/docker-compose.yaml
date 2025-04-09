@@ -1,7 +1,7 @@
 name: ntu_web
 services:
   web:
-    build: .
+    image: zionh/ntu_web_programming:latest
     container_name: django
     ports:
       - "8000:80"

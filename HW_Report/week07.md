@@ -52,6 +52,19 @@
 
 - 使用 `.env` 檔案儲存 Django, MySQL 的設定，在容器啟動時載入，更有彈性。
 
+## Docker 啟動方式
+
+Image: https://hub.docker.com/r/zionh/ntu_web_programming
+
+指令：
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+可調整 `.env` 檔設定 Django superuser 帳密
+
 ## 分工情形
 
 組別：第五組
