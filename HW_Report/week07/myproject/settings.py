@@ -39,6 +39,8 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.orb.local',  # OrbStack
+    'https://hyperactive.ddns.net',
+    'https://hsinchu-huang-147.tplinkdns.com:12346',
 ]
 
 # Application definition
