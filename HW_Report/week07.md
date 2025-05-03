@@ -1,87 +1,52 @@
-# Team 5 Week 7 Report
+# Team 5 Week 11 Report
 
 ## Quick Overview
 
-本週主題：後端整合與 Docker 部署。我們將前五週完成的前端介面（HTML/CSS/JS）與 Django REST Framework 後端結合，實作使用者系統、交易 CRUD、債務計算等 API，並以 MySQL 作為資料庫，最後使用 Docker Compose 完成本專案的容器化部署，確保開發與生產環境一致。
+本週主題是 AJAX 和 WebSocket。在先前的專案中，我們製作了線上多人記帳網站。除了基本的記帳功能，我們也實作了視覺化呈現 (PixiJs) 和註冊及登入登出等功能。
 
-### 系統 Features Highlight
+在先前的基礎上，我們利用 AJAX 及 WebSocket 技術，在新交易產生時自動更新交易紀錄、負債關係表和 Pixi 圖示，使用戶不必頻繁重整網頁，也可以取得即時資訊。
 
-- 使用者登入／註冊／登出（Session + CSRF 保護）
-- 交易 CRUD API（列表、建立、更新、查詢）
-- 債務結算與總債務查詢 API (`/api/debt-relations/`, `/api/total-debts/`)
-- MySQL 資料庫儲存與 Django ORM 操作
-- Docker 容器化部署（Django + Gunicorn + MySQL）
-- 靜態檔案服務與壓縮（Whitenoise）
+最後，我們改寫 `layout.html` 及其他內容，使不同頁面設計語言更加一致，且符合 Django 設計慣例。
 
-[Week 7 Demo Link](https://hsinchu-huang-147.tplinkdns.com:12346)
+[Week 11 Demo Link](https://hsinchu-huang-147.tplinkdns.com:12347)
 
 [Assignment Demo Link](https://hsinchu-huang-147.tplinkdns.com:12345)
 
 ## 當週主題練習
+### AJAX 和 WebSocket
+- 在 `update_history.js` 中，使用 AJAX 透過 `fetch` 函數從 API 獲取交易紀錄和負債關係數據，並動態更新頁面上的交易歷史表和負債關係表。
+- 實作 WebSocket 連線。當伺服器端有新交易時，透過 WebSocket 接收更新訊息，觸發 `fetchTransactions` 和 `fetchDebts` 函數，確保用戶無需手動重整頁面即可看到最新數據。
+- 修改 `pixi_chart.js` ，使其自動更新時清除舊的畫布並重新繪製負債總覽圖表。
 
-### 使用的 Django 技術
 
-- 使用 `@login_required`、`authenticate`、`login`、`logout` 處理使用者驗證流程
-- Django Template：`index.html`、`login.html`、`register.html`
-- 使用 WhiteNoise 提供 static files 給前端
-- Django REST Framework：`@api_view` 定義 API endpoints，回傳 JSON 與適當 HTTP status
-- Serializer：`UserSerializer`、`TransactionSerializer` 序列化使用者與交易資料
-- URL Routing：`urlpatterns` 定義前端頁面與 API 路由
+### 重做部分 Django
 
-### 使用的 MySQL 與 ORM
-
-- 在 `settings.py` 中設定 `DATABASES` 為 MySQL，並透過環境變數載入連線參數
-- Transaction Model：`ForeignKey` 連結 `User`，`DecimalField` 儲存金額，`auto_now_add` 紀錄時間
-- 債務計算邏輯：
-  - `debt_relation_get`：聚合所有交易紀錄，計算最簡結算表
-  - `total_debt_view`：計算每人淨債務
-
-### 使用的 Docker 技術
-
-- **Dockerfile**：以 `python:3.13` 為 base image，安裝依賴，使用 Gunicorn 啟動 Django，在容器啟動時自動處理資料庫 migration 和 superuser 的新增。
-- **docker-compose.yml**：定義 `web` (Django) 和 `db` (MySQL) 服務，並且設定當 MySQL 啟動後才啟動 Django，避免 Django 連不到 MySQL 的問題。
+- 使用 `layout.html` 作為統一模板，使不同頁面擁有統一的設計語言
+- 將登入頁面及註冊頁面的 `form` 改為由 Django 提供的 `AuthenticationForm` 和 `UserCreationForm`，讓 Django 幫我們處理基本登入登出，並且避免註冊密碼過於簡單。
 
 ## 額外練習
+我們將這次作業部署在私有的伺服器上，並使用 Nginx 作為 reverse proxy server，用 HTTPS 連線加密連線。
 
-### CSRF 保護
-
-- 增加 CSRF 保護，避免從其他位置執行我們的 API
-- 前端送 request 時加入 `X-CSRFToken` header
-
-### .env
-
-- 使用 `.env` 檔案儲存 Django, MySQL 的設定，在容器啟動時載入，更有彈性。
-
-### docker buildx
-
-```
-docker buildx build --platform linux/amd64,linux/arm64 -t zionh/ntu_web_programming:latest --push .
-```
-
-- 建立多種架構的 image，提升相容性
+[Week 11 Demo Link](https://hsinchu-huang-147.tplinkdns.com:12347)
 
 ## Docker 啟動方式
-
-Image: https://hub.docker.com/r/zionh/ntu_web_programming
 
 指令：
 
 ```bash
-docker compose build
-docker compose up -d
+docker-compose up --build -d
 ```
-
-可調整 `.env` 檔設定 Django superuser 帳密
+為避免和 Week 7 重複，本次 HTTP 連線使用 8001 port。
 
 ## 分工情形
 
 組別：第五組
 
 - 黃邦維 (b10902039)：25%
-  - Dockerfile & Docker Compose 容器化部署
+  - Docker 容器化部署
 - 鄭允臻 (b11902010)：25%
-  - MySQL 資料庫設定與 Django settings
+  - 調整 Django code 
 - 黃梓宏 (b11902023)：25%
-  - REST API Views 與債務計算邏輯
+  - 前端 AJAX 設計
 - 吳柏毅 (b11902127)：25%
-  - 前端登入/註冊模板與 CSRF 整合
+  - 後端 WebSocket 設計
