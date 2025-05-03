@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+    Roommate Debts
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>History and Overview</h2>
+    <!-- Debt Between Roommates Section -->
+    <section id="debtSection" class="debt-section" style="margin-top: 40px;">
+        <h3>Debt Between Roommates</h3>
+        <table id="debtTable" border="1">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount Owed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Debt relationship here -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Debt Visualization -->
+    <section id="visualizationSection" style="margin-top: 40px;">
+        <h3>Debt Visualization</h3>
+        <div id="pixiCanvasContainer"></div>
+    </section>
+    
+    <!-- Show/Hide History Button -->
+    <button id="toggleHistoryBtn" class="toggle-history-button">Show History</button>
+
+    <!-- Transaction History Section -->
+    <section id="historySection" class="history-section" style="display: none;">
+        <h3>Transaction History</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Creditor</th>
+                    <th>Debtor</th>
+                    <th>Amount</th>
+                    <th>Created At</th>
+                    <th>Transaction ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Transaction history here -->
+            </tbody>
+        </table>
+    </section>
+    
+    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <script src="{% static 'js/pixi_chart.js' %}"></script>
+    
+    <script>
+        // Toggle History Section
+        const toggleBtn = document.getElementById('toggleHistoryBtn');
+        const historySection = document.getElementById('historySection');
+
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = window.getComputedStyle(historySection).display === 'none';
+            historySection.style.display = isHidden ? 'block' : 'none';
+            toggleBtn.textContent = isHidden ? 'Hide History' : 'Show History';
+        });
+    </script>
+    <script src="{% static 'js/update_history.js' %}"></script>
+
+</div>
+{% endblock %}

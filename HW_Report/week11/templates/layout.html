@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Rommate Accounting System
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <a href="/">
+            <span title="Home">🏠 Home </span>
+        </a> | 
+        <a href="/transaction/add_transaction/">
+            <span title="Pay">💸 Pay </span>
+        </a> | 
+        <a href="/user/namelist">
+            <span title="Roomates">👥 Roommates </span>
+        </a> | 
+        <a href="/transaction/history">
+            <span title="History">📜 History / Overview </span>
+        </a> | 
+        {% if user.is_authenticated %}
+            <form class="logout" action="/user/logout/" method="post">
+                {% csrf_token %} 
+                <button class="logout-button" title="Logout">👋 Logout </button>
+            </form>
+        {% else %}
+            <a href="/user/signup/">
+                <span title="Signup">🌱 Signup </span>
+            </a> | 
+            <a href="/user/login/">
+                <span title="Login">🔐 Login </span>
+            </a>
+        {% endif %}
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

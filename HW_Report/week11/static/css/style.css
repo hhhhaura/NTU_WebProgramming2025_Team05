@@ -1,0 +1,298 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navigation bar styles */
+nav {
+    background-color: #6a1b9a;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #4a0072;
+}
+
+nav a {
+    color: white;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #f5e1f7;
+}
+
+nav form.logout {
+    display: inline-block;
+    margin: 0rem;
+    padding: 0rem;
+    vertical-align: middle;
+}
+
+.logout-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 1rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Page content container */
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header title inside content */
+main h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #6a1b9a;
+    margin-bottom: 1rem;
+}
+
+/* Paragraph under header */
+main p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #444;
+}
+
+main p a {
+    color: #6a1b9a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main p a:hover {
+    text-decoration: underline;
+}
+table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table thead {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f5e1f7;
+    color: #000;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: white;
+    color: #000;
+}
+form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+form label {
+    font-weight: bold;
+    color: #6a1b9a;
+    margin-bottom: 0.25rem;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+form button[type="submit"] {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+}
+
+form button[type="submit"]:hover {
+    background-color: #4a0072;
+}
+
+/* Optional messages styling */
+ul.messages {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 1rem;
+    list-style: none;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+ul.messages li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+ul.messages li:last-child {
+    border-bottom: none;
+}
+
+/* Message types, if using Django's default tags */
+ul.messages li.success {
+    color: #2e7d32;
+}
+
+ul.messages li.error {
+    color: #c62828;
+}
+.login-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h1 {
+    font-size: 2rem;
+    color: #6a1b9a;
+    margin-bottom: 1.5rem;
+}
+
+.form-with-validation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: left;
+}
+
+.form-with-validation input {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.form-submit {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-submit:hover {
+    background-color: #4a0072;
+}
+
+.footer {
+    margin-top: 1.5rem;
+}
+
+.footer p {
+    color: #555;
+}
+
+.footer a {
+    color: #6a1b9a;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+/* Roommate list styles */
+ul.roommate-list {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 0;
+    list-style: none;
+}
+
+ul.roommate-list li {
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    color: #6a1b9a;
+    font-weight: bold;
+}
+
+/* Toggle History Button Style */
+.toggle-history-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 2rem;
+}
+
+.toggle-history-button:hover {
+    background-color: #4a0072;
+}
+
+/* Hide by default */
+#historySection {
+    display: none;
+    margin-top: 2rem;
+}
+
+#pixiCanvasContainer canvas {
+    max-width: 100%;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}

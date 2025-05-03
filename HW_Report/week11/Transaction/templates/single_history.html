@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- History Section -->
+    <section id="historySectionSingle" class="history-section">
+        <h3>Transaction History</h3>
+        <p>{{ trans.creditor }} lent {{ trans.debtor }} {{ trans.amount }} dollars on {{ trans.created_at }}</p>
+        <p>Description: {{trans.description}}</p>
+    </section>
+</div>
+</body>
+{% endblock %}
