@@ -31,9 +31,43 @@ Below are the details of our assignments, including descriptions and demo links.
 - **Description**: Integrated the front-end with a Django REST Framework backend, adding user authentication, transaction CRUD operations, and debt calculation APIs. Connected to a MySQL database and containerized with Docker for consistent development and production environments. Optimized with Gunicorn for performance and Whitenoise for static files.
 - **Demo**: [Week 7 Demo](https://hsinchu-huang-147.tplinkdns.com:12346)
 
-## Getting Started
+### Week 11 - AJAX, WebSocket, and Django Refinement
+- **Description**: Enhanced the expense tracking system with real-time updates using AJAX and WebSocket technologies. Implemented AJAX with `fetch` to dynamically update transaction history and debt relationship tables without page refreshes. Integrated WebSocket to push new transaction notifications from the server, triggering automatic data refreshes for tables and PixiJS debt visualizations. Refactored Django templates using a unified `layout.html` for consistent design and adopted Django’s `AuthenticationForm` and `UserCreationForm` for secure login and registration. The application remains containerized with Docker for seamless deployment.
+- **Demo**: [Week 11 Demo](https://hsinchu-huang-147.tplinkdns.com:12347)
 
-To explore or run the projects locally:
-1. Clone this repository:
+## Getting Started
+To explore or run the projects locally, clone this repository:
+```bash
+git clone https://github.com/hhhhaura/NTU_WebProgramming2025_Team05.git
+```
+
+Follow these steps to view each week's project:
+
+1. **Week 3**:
    ```bash
-   git clone https://github.com/hhhhaura/NTU_WebProgramming2025_Team05.git
+   cd HW_Report/week03
+   python -m http.server 8000
+   ```
+   Then visit `http://localhost:8000` in your browser.
+
+2. **Week 5**:
+   ```bash
+   cd HW_Report/week05
+   python -m http.server 8000
+   ```
+   Then visit `http://localhost:8000` in your browser.
+
+3. **Week 7**:
+   ```bash
+   cd HW_Report/week07
+   docker compose build
+   docker compose up -d
+   ```
+   Then visit `http://localhost:8000` in your browser.
+
+4. **Week 11**:
+   ```bash
+   cd HW_Report/week11
+   docker compose up --build -d
+   ```
+   Then visit `http://localhost:8001` in your browser.
