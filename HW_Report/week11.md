@@ -25,7 +25,9 @@
 - 將登入頁面及註冊頁面的 `form` 改為由 Django 提供的 `AuthenticationForm` 和 `UserCreationForm`，讓 Django 幫我們處理基本登入登出，並且避免註冊密碼過於簡單。
 
 ## 額外練習
-我們將這次作業
+我們將這次作業部署在私有的伺服器上，並使用 Nginx 作為 reverse proxy server，用 HTTPS 連線加密連線。
+
+[Week 11 Demo Link](https://hsinchu-huang-147.tplinkdns.com:12347)
 
 ## Docker 啟動方式
 
@@ -34,7 +36,7 @@
 ```bash
 docker-compose up --build -d
 ```
-這次沒有設定 super user
+為避免和 Week 7 重複，本次 HTTP 連線使用 8001 port。
 
 ## 分工情形
 
