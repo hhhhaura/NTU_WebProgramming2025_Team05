@@ -38,10 +38,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Transaction',
+    'django.contrib.sites',  # Required for allauth
+    
+    # allauth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # social providers
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    
+    # your apps
     'User',
-    'rest_framework',
+    'Transaction',
     'API',
+    'rest_framework',
     'channels',
 ]
 ASGI_APPLICATION = "myproject.asgi.application"
@@ -151,3 +162,35 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
+
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'purplesettleup@gmail.com'
+EMAIL_HOST_PASSWORD = 'djhe gajf rjeh tycb'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Allauth configuration
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+# Allauth settings
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+# Login/Logout URLs
+LOGIN_URL = 'account_login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_URL = 'account_logout'
+LOGOUT_REDIRECT_URL = '/'

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Transaction | Roommate Accounting
+{% endblock %}
+
+{% block content %}
+<h2>Add a Transaction</h2>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<!-- Add reCAPTCHA script in the head -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<form action="/transaction/add_transaction/" method="post">
+    {% csrf_token %}
+    
+    <label for="creditor">Who did you borrow from?</label>
+    <select name="creditor" id="creditor" required>
+        {% for user in users %}
+            {% if user != request.user %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <br><br>
+
+    <label for="amount">Amount ($)</label>
+    <input type="number" name="amount" id="amount" step="0.01" min="0" required>
+    <br><br>
+
+    <label for="description">Description (optional)</label>
+    <input type="text" name="description" id="description" maxlength="255">
+    <br><br>
+
+    <!-- Add reCAPTCHA widget before the submit button -->
+    <div class="g-recaptcha" data-sitekey="6LcRqTcrAAAAAFwHjsvUMmqK0Z4ygtPIJLMvZa_B"></div>
+    <br>
+
+    <button type="submit">Add Transaction</button>
+</form>
+
+
+
+{% endblock %}

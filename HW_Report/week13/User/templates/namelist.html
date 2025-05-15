@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Roommate List
+{% endblock %}
+
+{% block content %}
+    <h1>👥 Roommate List</h1>
+    <ul class="roommate-list">
+        {% for user in users %}
+            <li>{{ user.username }}</li>
+        {% empty %}
+            <li>No roommates found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

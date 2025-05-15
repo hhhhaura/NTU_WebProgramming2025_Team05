@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Notifications
+{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <h1>Notifications</h1>
+    
+    <div class="notifications-list">
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="notification-item {% if not notification.read %}unread{% endif %}" 
+                     data-id="{{ notification.id }}">
+                    <div class="notification-icon">
+                        {% if notification.notification_type == 'debt' %}
+                            💸
+                        {% elif notification.notification_type == 'payment' %}
+                            💰
+                        {% elif notification.notification_type == 'reminder' %}
+                            ⏰
+                        {% else %}
+                            📢
+                        {% endif %}
+                    </div>
+                    <div class="notification-content">
+                        <h3>{{ notification.title }}</h3>
+                        <p>{{ notification.message }}</p>
+                        <div class="notification-meta">
+                            <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
+                            {% if notification.email_sent %}
+                                <span class="email-sent">✉️ Email sent</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if not notification.read %}
+                        <button class="mark-read-button" onclick="markAsRead({{ notification.id }})">
+                            Mark as read
+                        </button>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-notifications">
+                <p>You have no notifications.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function markAsRead(notificationId) {
+    fetch(`/user/notifications/${notificationId}/mark-read/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const notification = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+            notification.classList.remove('unread');
+            const button = notification.querySelector('.mark-read-button');
+            if (button) button.remove();
+            updateNotificationCount();
+        }
+    });
+}
+
+function updateNotificationCount() {
+    fetch('/user/notifications/count/')
+    .then(response => response.json())
+    .then(data => {
+        const counter = document.getElementById('notification-counter');
+        if (counter) {
+            if (data.count > 0) {
+                counter.textContent = data.count;
+                counter.style.display = 'block';
+            } else {
+                counter.style.display = 'none';
+            }
+        }
+    });
+}
+</script>
+{% endblock %} 

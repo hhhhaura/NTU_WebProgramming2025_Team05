@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My Debts
+{% endblock %}
+
+{% block content %}
+    <h1>My Debts</h1>
+    <div class="debt-container">
+        <div class="debt-section">
+            <h2>Money I Owe</h2>
+            <div class="debt-list">
+                {% for debt in debts %}
+                    {% if debt.debtor == request.user.username %}
+                        <div class="debt-item owe">
+                            <p>You owe <strong>{{ debt.creditor }}</strong> ${{ debt.amount }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="debt-section">
+            <h2>Money Owed to Me</h2>
+            <div class="debt-list">
+                {% for debt in debts %}
+                    {% if debt.creditor == request.user.username %}
+                        <div class="debt-item owed">
+                            <p><strong>{{ debt.debtor }}</strong> owes you ${{ debt.amount }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="debt-section">
+            <h2>Net Balance</h2>
+            <div class="debt-total">
+                {% for balance in total_balance %}
+                    {% if balance.user == request.user.username %}
+                        <p class="{% if balance.net_balance < 0 %}negative{% else %}positive{% endif %}">
+                            {% if balance.net_balance < 0 %}
+                                You owe a total of ${{ balance.net_balance|abs }}
+                            {% else %}
+                                You are owed a total of ${{ balance.net_balance }}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %} 
