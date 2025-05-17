@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.utils import timezone
+import uuid
 
 def generate_random_slug():
     return get_random_string(length=10)
@@ -53,19 +55,13 @@ class SharedExpense(models.Model):
         )
 
 class ExpenseShare(models.Model):
-    expense = models.ForeignKey(SharedExpense, on_delete=models.CASCADE)
-    user = models.ForeignKey(
-        User,
-        related_name='expense_shares',
-        on_delete=models.CASCADE
-    )
+    expense = models.ForeignKey(SharedExpense, on_delete=models.CASCADE, related_name='shares')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     share_amount = models.DecimalField(max_digits=10, decimal_places=2)
-
-    class Meta:
-        unique_together = ['expense', 'user']
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'{self.user.username}\'s share of ${self.share_amount} for expense {self.expense.id}'
+        return f"{self.user.username}'s share of ${self.share_amount} for {self.expense}"
 
 class Transaction(models.Model):
     creditor = models.ForeignKey(
@@ -118,3 +114,22 @@ class Transaction(models.Model):
                 "type": "transaction_update",
             }
         )
+
+class PaymentVerification(models.Model):
+    PAYMENT_STATUS = (
+        ('pending', 'Pending'),
+        ('verified', 'Verified'),
+        ('rejected', 'Rejected')
+    )
+
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='verifications', null=True, blank=True)
+    payer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments_made')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments_received')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Payment verification for ${self.amount} from {self.payer.username} to {self.receiver.username}"

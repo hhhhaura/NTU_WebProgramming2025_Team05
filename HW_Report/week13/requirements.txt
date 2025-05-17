@@ -22,3 +22,4 @@ psycopg2-binary
 channels
 whitenoise
 django-allauth==0.61.0
+PyJWT==2.8.0

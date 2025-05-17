@@ -6,14 +6,31 @@
 
 {% block content %}
     <h1>My Debts</h1>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <div class="debt-container">
         <div class="debt-section">
             <h2>Money I Owe</h2>
             <div class="debt-list">
                 {% for debt in debts %}
-                    {% if debt.debtor == request.user.username %}
+                    {% if debt.debtor == request.user.username and debt.amount > 0.000001 %}
                         <div class="debt-item owe">
-                            <p>You owe <strong>{{ debt.creditor }}</strong> ${{ debt.amount }}</p>
+                            <p>You owe <strong>{{ debt.creditor }}</strong> ${{ debt.amount|floatformat:2 }}</p>
+                            <button class="repay-debt-button" 
+                                    onclick="confirmRepayDebt('{{ debt.creditor }}', '{{ debt.amount }}', '{{ csrf_token }}')">
+                                {% if debt.status == 'pending' %}
+                                    Verification Pending
+                                {% else %}
+                                    Repay Debt
+                                {% endif %}
+                            </button>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -24,9 +41,20 @@
             <h2>Money Owed to Me</h2>
             <div class="debt-list">
                 {% for debt in debts %}
-                    {% if debt.creditor == request.user.username %}
-                        <div class="debt-item owed">
-                            <p><strong>{{ debt.debtor }}</strong> owes you ${{ debt.amount }}</p>
+                    {% if debt.creditor == request.user.username and debt.amount > 0.000001 %}
+                        <div class="debt-item owed" id="debt-{{ forloop.counter }}">
+                            <p><strong>{{ debt.debtor }}</strong> owes you ${{ debt.amount|floatformat:2 }}</p>
+                            {% if debt.status == 'pending' and debt.notification_id %}
+                                <button class="verify-debt-button" 
+                                        onclick="verifyDebt('{{ debt.debtor }}', '{{ debt.amount }}', {{ debt.notification_id }}, '{{ csrf_token }}')">
+                                    Verify Payment
+                                </button>
+                            {% else %}
+                                <button class="cancel-debt-button" 
+                                        onclick="confirmCancelDebt('{{ debt.debtor }}', '{{ debt.amount }}', '{{ csrf_token }}')">
+                                    Cancel Debt
+                                </button>
+                            {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -40,7 +68,7 @@
                     {% if balance.user == request.user.username %}
                         <p class="{% if balance.net_balance < 0 %}negative{% else %}positive{% endif %}">
                             {% if balance.net_balance < 0 %}
-                                You owe a total of ${{ balance.net_balance|abs }}
+                                You owe a total of ${{ balance.net_balance|cut:"-" }}
                             {% else %}
                                 You are owed a total of ${{ balance.net_balance }}
                             {% endif %}
@@ -50,4 +78,394 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="paymentMethodModal">
+        <div class="modal-content">
+            <h3>Choose Payment Method</h3>
+            <p id="preferredPaymentText" class="preferred-payment-info"></p>
+            <select id="paymentMethodSelect">
+                <option value="">Select a payment method</option>
+                <option value="cash">Cash</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="venmo">Venmo</option>
+                <option value="paypal">PayPal</option>
+            </select>
+            <div class="modal-buttons">
+                <button onclick="confirmSelectedPayment()" id="confirmPaymentBtn" disabled>Confirm</button>
+                <button onclick="closePaymentModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPaymentDetails = null;
+        const PAYMENT_METHODS = {
+            'cash': 'Cash',
+            'bank_transfer': 'Bank Transfer',
+            'venmo': 'Venmo',
+            'paypal': 'PayPal'
+        };
+
+        function formatPaymentMethod(method) {
+            return PAYMENT_METHODS[method.toLowerCase()] || method;
+        }
+
+        function showPaymentMethodModal(creditor, amount, csrfToken) {
+            currentPaymentDetails = { creditor, amount, csrfToken };
+            document.getElementById('paymentMethodModal').style.display = 'block';
+            const select = document.getElementById('paymentMethodSelect');
+            select.value = ''; // Reset selection
+            
+            // Get and show the creditor's preferred payment method
+            fetch(`/transaction/get_payment_method/${creditor}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const preferredText = document.getElementById('preferredPaymentText');
+                    const paymentMethod = data.payment_method;
+                    if (paymentMethod && paymentMethod !== 'Not specified') {
+                        const formattedMethod = formatPaymentMethod(paymentMethod);
+                        preferredText.textContent = `${creditor}'s preferred payment method: ${formattedMethod}`;
+                        
+                        // Set as default selection if it's a valid option
+                        const option = Array.from(select.options).find(opt => 
+                            opt.value === paymentMethod.toLowerCase());
+                        if (option) {
+                            select.value = option.value;
+                        }
+                    } else {
+                        preferredText.textContent = `${creditor} has not specified a preferred payment method`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const preferredText = document.getElementById('preferredPaymentText');
+                    preferredText.textContent = 'Could not fetch preferred payment method';
+                });
+        }
+
+        // Enable/disable confirm button based on selection
+        document.getElementById('paymentMethodSelect').addEventListener('change', function() {
+            document.getElementById('confirmPaymentBtn').disabled = !this.value;
+        });
+
+        function closePaymentModal() {
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            currentPaymentDetails = null;
+        }
+
+        async function confirmSelectedPayment() {
+            if (!currentPaymentDetails) return;
+
+            const { creditor, amount, csrfToken } = currentPaymentDetails;
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
+
+            try {
+                const response = await fetch('/transaction/repay_debt/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        creditor: creditor,
+                        amount: amount,
+                        payment_method: paymentMethod
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.status === 'pending') {
+                        alert('Payment verification request has been sent to the creditor. The debt will be cleared once they verify the payment.');
+                    } else {
+                        alert('Payment processed successfully!');
+                    }
+                    closePaymentModal();
+                    await updateDebtView();
+                } else {
+                    alert('Failed to process payment. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing the payment.');
+            }
+        }
+
+        async function confirmCancelDebt(debtor, amount, csrfToken) {
+            if (confirm(`Are you sure you want to cancel the debt of $${amount} from ${debtor}?`)) {
+                try {
+                    const response = await fetch('/transaction/cancel_debt/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({
+                            debtor: debtor,
+                            amount: amount
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Refresh the debt data
+                        await updateDebtView();
+                    } else {
+                        alert('Failed to cancel debt. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while canceling the debt.');
+                }
+            }
+        }
+
+        async function confirmRepayDebt(creditor, amount, csrfToken) {
+            try {
+                // Get the creditor's preferred payment method
+                const paymentMethodResponse = await fetch(`/transaction/get_payment_method/${creditor}/`);
+                const paymentMethodData = await paymentMethodResponse.json();
+                
+                // Show the payment method modal
+                showPaymentMethodModal(creditor, amount, csrfToken);
+                
+                // Set the preferred payment method as the default selected option if it exists
+                if (paymentMethodData.payment_method && paymentMethodData.payment_method !== 'Not specified') {
+                    const select = document.getElementById('paymentMethodSelect');
+                    const option = Array.from(select.options).find(opt => opt.value === paymentMethodData.payment_method.toLowerCase());
+                    if (option) {
+                        select.value = option.value;
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while getting payment information.');
+            }
+        }
+
+        async function updateDebtView() {
+            try {
+                // Fetch updated debt relationships
+                const debtResponse = await fetch('/api/debts/');
+                const debts = await debtResponse.json();
+
+                // Fetch updated total balance
+                const totalResponse = await fetch('/api/debts/total/');
+                const totalBalance = await totalResponse.json();
+
+                // Update the UI
+                updateDebtUI(debts, totalBalance);
+            } catch (error) {
+                console.error('Error updating debt view:', error);
+            }
+        }
+
+        function updateDebtUI(debts, totalBalance) {
+            // Update Money I Owe section
+            const oweList = document.querySelector('.debt-section:nth-child(1) .debt-list');
+            oweList.innerHTML = debts
+                .filter(debt => {
+                    return debt.debtor === '{{ request.user.username }}' && 
+                           (parseFloat(debt.amount) > 0 || debt.status === 'pending');
+                })
+                .map(debt => `
+                    <div class="debt-item owe">
+                        <p>You owe <strong>${debt.creditor}</strong> $${debt.amount}</p>
+                        <button class="repay-debt-button" 
+                                onclick="confirmRepayDebt('${debt.creditor}', '${debt.amount}', '{{ csrf_token }}')">
+                            ${debt.status === 'pending' ? 'Verification Pending' : 'Repay Debt'}
+                        </button>
+                    </div>
+                `).join('');
+
+            // Update Money Owed to Me section
+            const owedList = document.querySelector('.debt-section:nth-child(2) .debt-list');
+            owedList.innerHTML = debts
+                .filter(debt => {
+                    return debt.creditor === '{{ request.user.username }}' && 
+                           (parseFloat(debt.amount) > 0 || debt.status === 'pending');
+                })
+                .map((debt, index) => {
+                    const buttonHtml = debt.status === 'pending' && debt.notification_id
+                        ? `<button class="verify-debt-button" 
+                                onclick="verifyDebt('${debt.debtor}', '${debt.amount}', ${debt.notification_id}, '{{ csrf_token }}')">
+                            Verify Payment
+                           </button>`
+                        : `<button class="cancel-debt-button" 
+                                onclick="confirmCancelDebt('${debt.debtor}', '${debt.amount}', '{{ csrf_token }}')">
+                            Cancel Debt
+                           </button>`;
+                    
+                    return `
+                        <div class="debt-item owed" id="debt-${index + 1}">
+                            <p><strong>${debt.debtor}</strong> owes you $${debt.amount}</p>
+                            ${buttonHtml}
+                        </div>
+                    `;
+                }).join('');
+
+            // Update Net Balance section
+            const totalSection = document.querySelector('.debt-total');
+            const userBalance = totalBalance.find(balance => balance.user === '{{ request.user.username }}');
+            if (userBalance) {
+                const netBalance = parseFloat(userBalance.net_balance);
+                totalSection.innerHTML = `
+                    <p class="${netBalance < 0 ? 'negative' : 'positive'}">
+                        ${netBalance < 0 
+                            ? `You owe a total of $${Math.abs(netBalance).toFixed(2)}`
+                            : `You are owed a total of $${netBalance.toFixed(2)}`}
+                    </p>
+                `;
+            }
+        }
+
+        async function verifyDebt(debtor, amount, notificationId, csrfToken) {
+            console.log('Verifying debt:', { debtor, amount, notificationId });  // Debug log
+            if (confirm(`Verify that ${debtor} has paid you $${amount}?`)) {
+                try {
+                    const requestData = {
+                        notification_id: notificationId,
+                        action: 'verify'
+                    };
+                    console.log('Sending request data:', requestData);  // Debug log
+
+                    const response = await fetch('/transaction/verify_payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('Server error:', errorData);  // Debug log
+                        alert(`Failed to verify payment: ${errorData.message}`);
+                        return;
+                    }
+
+                    await updateDebtView();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while verifying the payment.');
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .repay-debt-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .repay-debt-button:hover {
+            background-color: #45a049;
+        }
+
+        .debt-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-buttons button:first-child {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .modal-buttons button:last-child {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.9;
+        }
+
+        .preferred-payment-info {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .verify-debt-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .verify-debt-button:hover {
+            background-color: #1976D2;
+        }
+
+        button[disabled] {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
 {% endblock %} 

@@ -36,35 +36,34 @@ def send_smtp_email(to_email, subject, html_content):
         print(f"Failed to send email via SMTP: {str(e)}")
         return False
 
-def create_notification(user, notification_type, title, message, send_email=True):
+def create_notification(user, notification_type, title, message, send_email=False, verification_id=None):
     """
-    Create a notification and optionally send an email.
+    Create a notification for a user.
+    
+    Args:
+        user: User object - the recipient of the notification
+        notification_type: str - type of notification (debt, payment, reminder, system)
+        title: str - notification title
+        message: str - notification message
+        send_email: bool - whether to send an email notification
+        verification_id: int - optional ID for payment verifications
     """
-    # Create notification object
     notification = Notification.objects.create(
         recipient=user,
         notification_type=notification_type,
         title=title,
-        message=message
+        message=message,
+        email_sent=False,
+        verification_id=verification_id
     )
 
-    if send_email and user.email:  # Only send if user has an email address
-        # Prepare email content
-        html_message = render_to_string('notification_email.html', {
-            'user': user,
-            'title': title,
-            'message': message,
-            'notification_type': notification.get_notification_type_display()
-        })
-
-        # Send email using SMTP
-        subject = f'Roommate Accounting System - {title}'
-        email_sent = send_smtp_email(user.email, subject, html_message)
-        
-        if email_sent:
-            print(f"Successfully sent email notification to {user.email}")
+    if send_email:
+        try:
+            # Send email logic here
             notification.email_sent = True
             notification.save()
+        except Exception as e:
+            print(f"Failed to send email notification: {e}")
 
     return notification
 

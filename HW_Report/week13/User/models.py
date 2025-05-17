@@ -34,15 +34,19 @@ class Notification(models.Model):
         ('payment', 'Payment Received'),
         ('reminder', 'Payment Reminder'),
         ('system', 'System Message'),
+        ('message', 'User Message'),  # New type for user messages
     )
 
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_notifications')  # New field for message sender
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     title = models.CharField(max_length=100)
     message = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     read = models.BooleanField(default=False)
     email_sent = models.BooleanField(default=False)
+    verification_id = models.IntegerField(null=True, blank=True)  # For storing payment verification IDs
+    is_deleted = models.BooleanField(default=False)  # New field to track if notification is deleted
 
     class Meta:
         ordering = ['-created_at']
