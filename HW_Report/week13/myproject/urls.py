@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +26,5 @@ urlpatterns = [
     path('api/', include('API.urls')),
     path('transaction/', include('Transaction.urls')),
     path('user/', include('User.urls')),
-    path('', include('Transaction.urls')),
+    path('', views.homepage),  # Assuming you have a home view
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
