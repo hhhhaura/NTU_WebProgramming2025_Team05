@@ -87,11 +87,11 @@
                 <option value="">Select a payment method</option>
                 <option value="cash">Cash</option>
                 <option value="bank_transfer">Bank Transfer</option>
-                <option value="venmo">Venmo</option>
-                <option value="paypal">PayPal</option>
+                <option value="bank_transfer">Line Pay</option>
             </select>
+            <p id="bankAccountInfo" class="bank-account-info" style="display: none;"></p>
             <div class="modal-buttons">
-                <button onclick="confirmSelectedPayment()" id="confirmPaymentBtn" disabled>Confirm</button>
+                <button onclick="confirmSelectedPayment()" id="confirmPaymentBtn">Confirm</button>
                 <button onclick="closePaymentModal()">Cancel</button>
             </div>
         </div>
@@ -124,13 +124,23 @@
                     const paymentMethod = data.payment_method;
                     if (paymentMethod && paymentMethod !== 'Not specified') {
                         const formattedMethod = formatPaymentMethod(paymentMethod);
-                        preferredText.textContent = `${creditor}'s preferred payment method: ${formattedMethod}`;
+                        let message = `${creditor}'s preferred payment method: ${formattedMethod}`;
+                        if (paymentMethod === 'bank_transfer' && data.bank_account) {
+                            message += `\nBank Account: ${data.bank_account}`;
+                        }
+                        preferredText.textContent = message;
                         
                         // Set as default selection if it's a valid option
                         const option = Array.from(select.options).find(opt => 
                             opt.value === paymentMethod.toLowerCase());
                         if (option) {
                             select.value = option.value;
+                            // Show bank account if bank transfer is selected
+                            if (paymentMethod === 'bank_transfer' && data.bank_account) {
+                                const bankAccountInfo = document.getElementById('bankAccountInfo');
+                                bankAccountInfo.textContent = `Bank Account: ${data.bank_account}`;
+                                bankAccountInfo.style.display = 'block';
+                            }
                         }
                     } else {
                         preferredText.textContent = `${creditor} has not specified a preferred payment method`;
@@ -143,9 +153,35 @@
                 });
         }
 
-        // Enable/disable confirm button based on selection
+        // Enable/disable confirm button based on selection and show/hide bank account info
         document.getElementById('paymentMethodSelect').addEventListener('change', function() {
-            document.getElementById('confirmPaymentBtn').disabled = !this.value;
+            const selectedMethod = this.value;
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            const bankAccountInfo = document.getElementById('bankAccountInfo');
+            
+            confirmBtn.disabled = !selectedMethod;
+            
+            // Show/hide bank account info based on selection
+            if (selectedMethod === 'bank_transfer' && currentPaymentDetails) {
+                fetch(`/transaction/get_payment_method/${currentPaymentDetails.creditor}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.bank_account) {
+                            bankAccountInfo.textContent = `Bank Account: ${data.bank_account}`;
+                            bankAccountInfo.style.display = 'block';
+                        } else {
+                            bankAccountInfo.textContent = 'Bank account not provided';
+                            bankAccountInfo.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        bankAccountInfo.textContent = 'Could not fetch bank account information';
+                        bankAccountInfo.style.display = 'block';
+                    });
+            } else {
+                bankAccountInfo.style.display = 'none';
+            }
         });
 
         function closePaymentModal() {
@@ -466,6 +502,15 @@
         button[disabled] {
             background-color: #cccccc;
             cursor: not-allowed;
+        }
+
+        .bank-account-info {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1.1em;
         }
     </style>
 {% endblock %} 

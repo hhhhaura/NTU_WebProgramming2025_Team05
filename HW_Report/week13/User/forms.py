@@ -25,7 +25,7 @@ class ProfileForm(forms.ModelForm):
     
     class Meta:
         model = Profile
-        fields = ('bio', 'birth_date', 'phone_number', 'preferred_payment_method')
+        fields = ('bio', 'birth_date', 'phone_number', 'preferred_payment_method', 'bank_account')
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
             'preferred_payment_method': forms.Select(choices=[
@@ -33,5 +33,12 @@ class ProfileForm(forms.ModelForm):
                 ('bank_transfer', 'Bank Transfer'),
                 ('line_pay', 'Line Pay'),
                 ('cash', 'Cash'),
-            ])
+            ]),
+            'bank_account': forms.TextInput(attrs={
+                'placeholder': '(XXX)XXXXXXXXXXXXXX',
+                'pattern': r'^\(\d{3}\)\d{14}$'
+            })
+        }
+        help_texts = {
+            'bank_account': 'Enter your bank account number in the format (XXX)XXXXXXXXXXXXXX, where X are digits'
         } 

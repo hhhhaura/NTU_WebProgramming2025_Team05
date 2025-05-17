@@ -17,6 +17,11 @@ from django.views.decorators.csrf import csrf_protect
 from User.utils import create_notification
 from django.db import transaction as db_transaction
 from django.utils import timezone
+import uuid
+import hmac
+import base64
+import hashlib
+import time
 
 # Create your views here.
 @login_required
@@ -185,9 +190,11 @@ def get_payment_method(request, username):
     try:
         user = User.objects.get(username=username)
         payment_method = user.profile.preferred_payment_method
+        bank_account = user.profile.bank_account if payment_method == 'bank_transfer' else None
         return JsonResponse({
             'status': 'success',
-            'payment_method': payment_method if payment_method else 'Not specified'
+            'payment_method': payment_method if payment_method else 'Not specified',
+            'bank_account': bank_account
         })
     except User.DoesNotExist:
         return JsonResponse({

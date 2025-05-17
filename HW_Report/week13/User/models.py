@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.core.validators import RegexValidator
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -12,6 +13,18 @@ class Profile(models.Model):
     avatar = models.URLField(max_length=1024, blank=True)
     phone_number = models.CharField(max_length=20, blank=True)
     preferred_payment_method = models.CharField(max_length=50, blank=True)
+    bank_account = models.CharField(
+        max_length=19,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r'^\(\d{3}\)\d{14}$',
+                message='Bank account must be in format (XXX)XXXXXXXXXXXXXX, where X are digits',
+                code='invalid_bank_account'
+            )
+        ],
+        help_text='Format: (XXX)XXXXXXXXXXXXXX'
+    )
 
     def __str__(self):
         return f"{self.user.username}'s profile"
