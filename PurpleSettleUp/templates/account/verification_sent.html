@@ -1,0 +1,41 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Verify Your Email Address" %}{% endblock %}
+
+{% block inner_content %}
+<div class="verification-container">
+    <div class="verification-icon">
+        ✉️
+    </div>
+    <h1 class="mb-4">{% trans "Verify Your Email Address" %}</h1>
+    
+    <div class="verification-message">
+        <p>{% blocktrans %}We have sent an email to verify your email address. Please check your inbox and click on the verification link to complete your registration.{% endblocktrans %}</p>
+        
+        <div class="verification-steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-text">Check your email inbox</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-text">Open the verification email</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-text">Click the verification link</span>
+            </div>
+        </div>
+
+        <div class="verification-note">
+            <p>{% blocktrans %}If you don't see the email in your inbox, please check your spam folder.{% endblocktrans %}</p>
+        </div>
+
+        <div class="verification-actions">
+            <a href="{% url 'account_email' %}" class="btn btn-secondary">{% trans "Change Email Address" %}</a>
+            <a href="/" class="btn btn-primary">{% trans "Return to Home" %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

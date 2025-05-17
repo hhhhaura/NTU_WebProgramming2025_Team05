@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Roommate Accounting System
+{% endblock %}
+
+{% block content %}
+    <div class="home-container">
+        <div class="welcome-section">
+            <h1>Welcome, {{ user.username }}!</h1>
+            <p>This is your personal dashboard for the Roommate Accounting System.</p>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="dashboard-grid">
+            <div class="profile-section">
+                <div class="section-header">
+                    <h2>Your Profile</h2>
+                </div>
+                <form method="post" class="profile-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        {{ user_form.as_p }}
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Additional Information</h3>
+                        {{ profile_form.as_p }}
+                    </div>
+
+                    <div class="profile-actions">
+                        <button type="submit" class="save-button">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="quick-actions">
+                <div class="section-header">
+                    <h2>Quick Actions</h2>
+                </div>
+                <div class="action-buttons">
+                    <a href="/transaction/add_transaction/" class="action-button">
+                        <span>💸</span>
+                        Add New Transaction
+                    </a>
+                    <a href="/transaction/my_debt" class="action-button">
+                        <span>💰</span>
+                        View My Debts
+                    </a>
+                    <a href="/transaction/history" class="action-button">
+                        <span>📜</span>
+                        Transaction History
+                    </a>
+                    <a href="/user/namelist" class="action-button">
+                        <span>👥</span>
+                        Roommate List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

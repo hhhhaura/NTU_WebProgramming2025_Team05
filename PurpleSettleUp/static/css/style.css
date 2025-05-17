@@ -1,0 +1,1090 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navigation bar styles */
+nav {
+    background-color: #6a1b9a;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #4a0072;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #f5e1f7;
+}
+
+nav form.logout {
+    display: inline-block;
+    margin: 0rem;
+    padding: 0rem;
+    vertical-align: middle;
+}
+
+.logout-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 1rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Page content container */
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header title inside content */
+main h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #6a1b9a;
+    margin-bottom: 1rem;
+}
+
+/* Paragraph under header */
+main p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #444;
+}
+
+main p a {
+    color: #6a1b9a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main p a:hover {
+    text-decoration: underline;
+}
+table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table thead {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f5e1f7;
+    color: #000;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: white;
+    color: #000;
+}
+form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+form label {
+    font-weight: bold;
+    color: #6a1b9a;
+    margin-bottom: 0.25rem;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+form button[type="submit"] {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
+}
+
+form button[type="submit"]:hover {
+    background-color: #4a0072;
+}
+
+/* Optional messages styling */
+ul.messages {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 1rem;
+    list-style: none;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+ul.messages li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+ul.messages li:last-child {
+    border-bottom: none;
+}
+
+/* Message types, if using Django's default tags */
+ul.messages li.success {
+    color: #2e7d32;
+}
+
+ul.messages li.error {
+    color: #c62828;
+}
+.login-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h1 {
+    font-size: 2rem;
+    color: #6a1b9a;
+    margin-bottom: 1.5rem;
+}
+
+.form-with-validation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: left;
+}
+
+.form-with-validation input {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.form-submit {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-submit:hover {
+    background-color: #4a0072;
+}
+
+.footer {
+    margin-top: 1.5rem;
+}
+
+.footer p {
+    color: #555;
+}
+
+.footer a {
+    color: #6a1b9a;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+/* Roommate list styles */
+ul.roommate-list {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 0;
+    list-style: none;
+}
+
+ul.roommate-list li {
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    color: #6a1b9a;
+    font-weight: bold;
+}
+
+/* Toggle History Button Style */
+.toggle-history-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 2rem;
+}
+
+.toggle-history-button:hover {
+    background-color: #4a0072;
+}
+
+/* Hide by default */
+#historySection {
+    display: none;
+    margin-top: 2rem;
+}
+
+#pixiCanvasContainer canvas {
+    max-width: 100%;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}
+
+.debt-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.debt-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.debt-section h2 {
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.debt-item {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.debt-item.owe {
+    background-color: #ffe6e6;
+}
+
+.debt-item.owed {
+    background-color: #e6ffe6;
+}
+
+.debt-total {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.debt-total .negative {
+    color: #d32f2f;
+}
+
+.debt-total .positive {
+    color: #388e3c;
+}
+
+.cancel-debt-button {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-debt-button:hover {
+    background-color: #b71c1c;
+}
+
+/* Profile styles */
+.profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-section {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.form-section h2 {
+    color: #6a1b9a;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.profile-form p {
+    margin-bottom: 1rem;
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="url"],
+.profile-form input[type="date"],
+.profile-form textarea,
+.profile-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.profile-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.save-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #4a0072;
+}
+
+/* Home page styles */
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-section h1 {
+    color: #6a1b9a;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    color: #6a1b9a;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+}
+
+.quick-actions {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #f0f0f0;
+    transform: translateX(5px);
+}
+
+.action-button span {
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Navigation layout */
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Notification styles */
+.notification-link {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+}
+
+.notification-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    display: none;
+}
+
+.notifications-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.notification-item.unread {
+    background-color: #f0f4ff;
+    border-left: 4px solid #6a1b9a;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-content h3 {
+    margin: 0 0 0.5rem;
+    color: #333;
+}
+
+.notification-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.mark-read-button {
+    background-color: #6a1b9a;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.mark-read-button:hover {
+    background-color: #4a0072;
+}
+
+.no-notifications {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.email-sent {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #4caf50;
+}
+
+/* Authentication Pages */
+.login-container,
+.signup-container,
+.logout-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h1,
+.signup-container h1,
+.logout-container h1 {
+    color: #6a1b9a;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.login-container form,
+.signup-container form,
+.logout-container form {
+    margin-top: 1.5rem;
+}
+
+.login-container .form-group,
+.signup-container .form-group {
+    margin-bottom: 1rem;
+}
+
+.login-container label,
+.signup-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.login-container input[type="text"],
+.login-container input[type="email"],
+.login-container input[type="password"],
+.signup-container input[type="text"],
+.signup-container input[type="email"],
+.signup-container input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.login-container button,
+.signup-container button,
+.logout-container button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-container button:hover,
+.signup-container button:hover,
+.logout-container button:hover {
+    background-color: #4a0072;
+}
+
+.login-container a,
+.signup-container a {
+    color: #6a1b9a;
+    text-decoration: none;
+}
+
+.login-container a:hover,
+.signup-container a:hover {
+    text-decoration: underline;
+}
+
+.errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.socialaccount_ballot {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.login-or,
+.signup-or {
+    position: relative;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.login-or:before,
+.signup-or:before {
+    content: "or";
+    background: white;
+    padding: 0 10px;
+    color: #666;
+    position: relative;
+    z-index: 1;
+}
+
+.login-or:after,
+.signup-or:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #ddd;
+    z-index: 0;
+}
+
+/* Email Verification Page */
+.verification-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.verification-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.verification-message {
+    margin-top: 2rem;
+}
+
+.verification-message p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.verification-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.step:hover {
+    transform: translateX(5px);
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background-color: #6a1b9a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-text {
+    color: #333;
+    font-weight: 500;
+}
+
+.verification-note {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.verification-note p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.verification-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.verification-actions .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.verification-actions .btn-primary {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+.verification-actions .btn-primary:hover {
+    background-color: #4a0072;
+}
+
+.verification-actions .btn-secondary {
+    background-color: #f8f9fa;
+    color: #6a1b9a;
+    border: 1px solid #6a1b9a;
+}
+
+.verification-actions .btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+/* Email Confirmation Page */
+.confirmation-success {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f0fdf4;
+    border-radius: 8px;
+    margin: 2rem 0;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirmation-content {
+    width: 100%;
+    text-align: center;
+}
+
+.confirmation-success p {
+    font-size: 1.2rem;
+    color: #166534;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.confirmation-success strong {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.confirmation-success form {
+    margin: 0 auto;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+}
+
+.confirmation-success .btn-lg {
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    min-width: 250px;
+    background: linear-gradient(45deg, #6a1b9a, #9c27b0);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.confirmation-success .btn-lg:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(106, 27, 154, 0.3);
+}
+
+.confirmation-success .btn-lg:active {
+    transform: translateY(1px);
+}
+
+/* Add a subtle shine effect on hover */
+.confirmation-success .btn-lg::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.confirmation-success .btn-lg:hover::after {
+    opacity: 1;
+    animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: rotate(45deg) translateX(-100%);
+    }
+    100% {
+        transform: rotate(45deg) translateX(100%);
+    }
+}
+
+.confirmation-error {
+    text-align: center;
+    padding: 2rem;
+    background-color: #fef2f2;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.confirmation-error .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.confirmation-error h2 {
+    color: #991b1b;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.confirmation-error p {
+    color: #7f1d1d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    min-width: 200px;
+}
+
+/* Enhance existing verification container styles */
+.verification-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.verification-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #6a1b9a, #9c27b0);
+}
+
+.verification-icon {
+    font-size: 5rem;
+    margin: 1rem 0 2rem;
+}
+
+/* Success animation */
+.verification-container:has(.confirmation-success) .verification-icon {
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+}
+
+/* Error animation */
+.verification-container:has(.confirmation-error) .verification-icon {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+    background: linear-gradient(to right, #6a1b9a, #9c27b0);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(106, 27, 154, 0.2);
+}
+
+.btn-secondary {
+    background: white;
+    border: 2px solid #6a1b9a;
+    color: #6a1b9a;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #f3e5f5;
+    transform: translateY(-2px);
+}

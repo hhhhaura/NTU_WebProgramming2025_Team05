@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile - {{ user.username }}
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>Profile</h1>
+    
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h2>Basic Information</h2>
+            {{ user_form.as_p }}
+        </div>
+
+        <div class="form-section">
+            <h2>Additional Information</h2>
+            {{ profile_form.as_p }}
+        </div>
+
+        <div class="profile-actions">
+            <button type="submit" class="save-button">Save Changes</button>
+        </div>
+    </form>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Rommate Accounting System
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="/">
+                <span title="Home">🏠 Home </span>
+            </a> | 
+            <a href="/transaction/add_transaction/">
+                <span title="New Expense">💸 New Expense </span>
+            </a> | 
+            <a href="/user/namelist">
+                <span title="Roomates">👥 Roommates </span>
+            </a> | 
+            <a href="/transaction/history">
+                <span title="History">📜 History / Overview </span>
+            </a> | 
+            <a href="/transaction/my_debt">
+                <span title="My Debt">💰 My Debt </span>
+            </a>
+        </div>
+        <div class="nav-right">
+            {% if user.is_authenticated %}
+                <a href="/user/notifications/" class="notification-link">
+                    <span title="Notifications" class="notification-icon">📬</span>
+                    <span id="notification-counter" class="notification-counter"></span>
+                </a>
+                <form class="logout" action="{% url 'account_logout' %}" method="post">
+                    {% csrf_token %} 
+                    <button class="logout-button" title="Logout">👋 Logout </button>
+                </form>
+            {% else %}
+                <a href="{% url 'account_signup' %}">
+                    <span title="Signup">🌱 Signup </span>
+                </a> | 
+                <a href="{% url 'account_login' %}">
+                    <span title="Login">🔐 Login </span>
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% if user.is_authenticated %}
+    <script>
+        function updateNotificationCount() {
+            fetch('/user/notifications/count/')
+            .then(response => response.json())
+            .then(data => {
+                const counter = document.getElementById('notification-counter');
+                if (counter) {
+                    if (data.count > 0) {
+                        counter.textContent = data.count;
+                        counter.style.display = 'block';
+                    } else {
+                        counter.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Update notification count every 30 seconds
+        updateNotificationCount();
+        setInterval(updateNotificationCount, 30000);
+    </script>
+    {% endif %}
+</body>
+</html>
