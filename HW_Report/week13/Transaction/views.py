@@ -19,7 +19,7 @@ from django.db import transaction as db_transaction
 from django.utils import timezone
 
 # Create your views here.
-@login_required(login_url="/account_login")
+@login_required
 def history(request):
     transactions = []
     users = []
@@ -31,7 +31,7 @@ def history(request):
     }
     return render(request, 'history.html', context)
 
-@login_required(login_url="/account_login")
+@login_required
 def single_transaction(request, slug):
     try:
         transaction = Transaction.objects.get(slug=slug)
@@ -43,7 +43,7 @@ def single_transaction(request, slug):
         messages.error(request, 'Transaction not found.')
         return redirect('history')
 
-@login_required(login_url="/account_login")
+@login_required
 def add_transaction(request):
     if request.method == 'POST':
         paid_by_id = request.POST.get('paid_by')
@@ -115,7 +115,7 @@ def add_transaction(request):
     all_users = User.objects.all()
     return render(request, 'add_transaction.html', {'all_users': all_users})
 
-@login_required(login_url="/account_login")
+@login_required
 def my_debt(request):
     try:
         # Get all transactions where the current user is either the creditor or debtor
@@ -157,7 +157,7 @@ def my_debt(request):
 
 @require_http_methods(["POST"])
 @csrf_protect
-@login_required(login_url="/account_login")
+@login_required
 def cancel_debt(request):
     try:
         data = json.loads(request.body)
@@ -180,7 +180,7 @@ def cancel_debt(request):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 @require_http_methods(["GET"])
-@login_required(login_url="/account_login")
+@login_required
 def get_payment_method(request, username):
     try:
         user = User.objects.get(username=username)
@@ -202,7 +202,7 @@ def get_payment_method(request, username):
 
 @require_http_methods(["POST"])
 @csrf_protect
-@login_required(login_url="/account_login")
+@login_required
 def repay_debt(request):
     try:
         data = json.loads(request.body)
@@ -242,7 +242,7 @@ def repay_debt(request):
 
 @require_http_methods(["POST"])
 @csrf_protect
-@login_required(login_url="/account_login")
+@login_required
 def verify_payment(request):
     try:
         data = json.loads(request.body)

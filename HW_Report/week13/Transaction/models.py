@@ -126,7 +126,12 @@ class PaymentVerification(models.Model):
     payer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments_made')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments_received')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=50)
+    PAYMENT_METHODS = (
+        ('cash', 'Cash'),
+        ('line_pay', 'Line Pay'), 
+        ('bank_transfer', 'Bank Transfer')
+    )
+    payment_method = models.CharField(max_length=50, choices=PAYMENT_METHODS)
     status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     verified_at = models.DateTimeField(null=True, blank=True)
