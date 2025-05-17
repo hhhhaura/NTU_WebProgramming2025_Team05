@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_protect
 from .forms import UserForm, ProfileForm
 from django.db import transaction
 from .models import Notification
@@ -53,36 +56,3 @@ def mark_as_read(request, notification_id):
 def get_notifications_count(request):
     count = get_unread_notifications_count(request.user)
     return JsonResponse({'count': count})
-
-def login_view(request): 
-    if request.method == "POST": 
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid(): 
-            login(request, form.get_user())
-            if 'next' in request.POST:
-                return redirect(request.POST.get('next'))
-            else:
-                return redirect("/")
-    else: 
-        form = AuthenticationForm()
-    return render(request, "login.html", { "form": form })
-
-def logout_view(request):
-    if request.method == "POST": 
-        logout(request) 
-        return redirect("/")
-    
-def signup_view(request):
-    if request.method == "POST": 
-        form = UserCreationForm(request.POST) 
-        if form.is_valid(): 
-            login(request, form.save())
-            return redirect("/")
-    else:
-        form = UserCreationForm()
-    return render(request, "signup.html", { "form": form })
-
-@login_required(login_url="/user/login/")
-def namelist(request):
-    users = User.objects.all().order_by('username')
-    return render(request, 'namelist.html', {'users': users})

@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Transaction
+from django.db.models import Q
+from .models import Transaction, SharedExpense, ExpenseShare
 from decimal import Decimal
 import requests
 import json
@@ -13,9 +14,10 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 from User.utils import create_notification
+from django.db import transaction as db_transaction
 
 # Create your views here.
-@login_required(login_url="/user/login/")
+@login_required(login_url="/account_login")
 def history(request):
     transactions = []
     users = []
@@ -27,126 +29,145 @@ def history(request):
     }
     return render(request, 'history.html', context)
 
-@login_required(login_url="/user/login/")
+@login_required(login_url="/account_login")
 def single_transaction(request, slug):
-    trans = Transaction.objects.get(slug=slug)
-    return render(request,'single_history.html', {'trans': trans})
+    try:
+        transaction = Transaction.objects.get(slug=slug)
+        context = {
+            'transaction': transaction
+        }
+        return render(request, 'single_transaction.html', context)
+    except Transaction.DoesNotExist:
+        messages.error(request, 'Transaction not found.')
+        return redirect('history')
 
-@login_required(login_url="/user/login/")
+@login_required(login_url="/account_login")
 def add_transaction(request):
     if request.method == 'POST':
-        # Verify reCAPTCHA
-        recaptcha_response = request.POST.get('g-recaptcha-response')
-        if not recaptcha_response:
-            messages.error(request, 'Please complete the reCAPTCHA.')
-            users = User.objects.exclude(id=request.user.id)
-            return render(request, 'add_transaction.html', {'users': users})
-
-        # Verify the reCAPTCHA response with Google
-        verify_url = 'https://www.google.com/recaptcha/api/siteverify'
-        data = {
-            'secret': '6LcRqTcrAAAAAOum1axN3iqetO0ymUv9Dbvp6OP1',  # Replace with your secret key
-            'response': recaptcha_response
-        }
-        response = requests.post(verify_url, data=data)
-        result = response.json()
-
-        if not result.get('success', False):
-            messages.error(request, 'Invalid reCAPTCHA. Please try again.')
-            users = User.objects.exclude(id=request.user.id)
-            return render(request, 'add_transaction.html', {'users': users})
-
-        creditor_id = request.POST.get('creditor')
-        amount = request.POST.get('amount')
+        paid_by_id = request.POST.get('paid_by')
+        amount = Decimal(request.POST.get('amount'))
         description = request.POST.get('description', '')
+        shared_with_ids = request.POST.getlist('shared_with')
 
         try:
-            creditor = User.objects.get(id=creditor_id)
+            with db_transaction.atomic():
+                # Get the user who paid
+                paid_by = User.objects.get(id=paid_by_id)
+                
+                # Create the shared expense
+                shared_expense = SharedExpense.objects.create(
+                    paid_by=paid_by,
+                    amount=amount,
+                    description=description
+                )
 
-            if creditor == request.user:
-                messages.error(request, "You can't owe yourself money.")
-                return redirect('add_transaction')
+                # Calculate share amount (divide equally among all participants including the payer)
+                total_participants = len(shared_with_ids)  # No need to add 1 since payer is included in shared_with
+                if total_participants == 0:
+                    raise ValueError("Please select at least one person to share the expense with")
+                
+                share_amount = amount / Decimal(total_participants)
+                print("Share amount:", share_amount)
 
-            transaction = Transaction.objects.create(
-                creditor=creditor,
-                debtor=request.user,
-                amount=amount,
-                description=description
-            )
+                # Create expense shares for all participants
+                for user_id in shared_with_ids:
+                    user = User.objects.get(id=user_id)
+                    
+                    # Create the expense share record
+                    ExpenseShare.objects.create(
+                        expense=shared_expense,
+                        user=user,
+                        share_amount=share_amount
+                    )
+                    print("Expense share created for user:", user.username)
 
-            # Create notification for the creditor
-            create_notification(
-                user=creditor,
-                notification_type='debt',
-                title='New Debt Added',
-                message=f'{request.user.username} has added a debt of ${amount} to you for: {description}',
-                send_email=True
-            )
+                    # Create a transaction record for each participant except the payer
+                    if user != paid_by:
+                        Transaction.objects.create(
+                            creditor=paid_by,
+                            debtor=user,
+                            amount=share_amount,
+                            description=description,
+                            shared_expense=shared_expense
+                        ).save()
+                        # Create notification for the debtor
+                        create_notification(
+                            user=user,
+                            notification_type='debt',
+                            title='New Shared Expense Added',
+                            message=f'{paid_by.username} added a shared expense of ${amount} ({description}). Your share is ${share_amount}.',
+                            send_email=True
+                        )
 
-            messages.success(request, 'Transaction added successfully!')
-            return redirect('/transaction/add_transaction/')
+                messages.success(request, 'Expense added and split successfully!')
+                return redirect('/transaction/history')
+
         except User.DoesNotExist:
-            messages.error(request, 'Selected creditor does not exist.')
+            messages.error(request, 'One or more selected users do not exist.')
+        except ValueError as e:
+            messages.error(request, str(e))
         except Exception as e:
             messages.error(request, f'An error occurred: {e}')
 
-    users = User.objects.exclude(id=request.user.id)
-    return render(request, 'add_transaction.html', {'users': users})
+    # Get all users for the template
+    all_users = User.objects.all()
+    return render(request, 'add_transaction.html', {'all_users': all_users})
 
-@login_required(login_url="/user/login/")
+@login_required(login_url="/account_login")
 def my_debt(request):
-    print("[DEBUG] Entering my_debt view")
-    print(f"[DEBUG] User: {request.user}")
-    
-    # Create a factory for requests
-    factory = APIRequestFactory()
-    
-    # Get debt relationships directly from the API view
-    debt_view = DebtRelationshipAPIView.as_view()
-    api_request = factory.get('/api/debts/')
-    api_request.user = request.user  # Pass the authenticated user
-    debt_response = debt_view(api_request)
-    print(f"[DEBUG] Debt response: {debt_response.data}")
-    debts = debt_response.data if debt_response.status_code == 200 else []
+    try:
+        # Get all transactions where the current user is either the creditor or debtor
+        user_transactions = Transaction.objects.filter(
+            Q(creditor=request.user) | Q(debtor=request.user)
+        ).order_by('-created_at')
 
-    # Get total balance directly from the API view
-    total_view = TotalDebtAPIView.as_view()
-    api_request = factory.get('/api/debts/total/')
-    api_request.user = request.user  # Pass the authenticated user
-    total_response = total_view(api_request)
-    total_balance = total_response.data if total_response.status_code == 200 else []
+        # Create API factory
+        factory = APIRequestFactory()
+        api_request = factory.get('/')
+        api_request.user = request.user
 
-    return render(request, 'my_debt.html', {
-        'debts': debts,
-        'total_balance': total_balance
-    })
+        # Get debt relationships
+        debt_view = DebtRelationshipAPIView()
+        debt_response = debt_view.get(api_request)
+        debt_relationships = debt_response.data
 
-@login_required(login_url="/user/login/")
-@csrf_protect
+        # Get total balance
+        total_view = TotalDebtAPIView()
+        total_response = total_view.get(api_request)
+        total_balance = total_response.data
+        print(debt_relationships)
+
+        context = {
+            'transactions': user_transactions,
+            'debts': debt_relationships,
+            'total_balance': total_balance
+        }
+
+        return render(request, 'my_debt.html', context)
+    except Exception as e:
+        messages.error(request, f'An error occurred: {e}')
+        return redirect('/')
+
 @require_http_methods(["POST"])
+@csrf_protect
+@login_required(login_url="/account_login")
 def cancel_debt(request):
     try:
         data = json.loads(request.body)
-        debtor = data.get('debtor')
+        debtor_username = data.get('debtor')
         amount = data.get('amount')
 
-        if not debtor or not amount:
-            return JsonResponse({'error': 'Missing required fields'}, status=400)
-
         # Get the debtor user object
-        try:
-            debtor_user = User.objects.get(username=debtor)
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'Debtor not found'}, status=404)
+        debtor = User.objects.get(username=debtor_username)
 
-        # Create a new transaction that cancels out the debt
+        # Create a new transaction to cancel the debt
         Transaction.objects.create(
-            creditor=debtor_user,  # The debtor becomes the creditor
-            debtor=request.user,   # The current user becomes the debtor
-            amount=amount,         # Same amount to cancel it out
+            creditor=debtor,  # The debtor becomes the creditor
+            debtor=request.user,  # The current user becomes the debtor
+            amount=amount,
             description="Debt cancellation"
         )
 
-        return JsonResponse({'message': 'Debt cancelled successfully'})
+        return JsonResponse({'status': 'success'})
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

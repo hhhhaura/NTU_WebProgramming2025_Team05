@@ -1,51 +1,214 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Add Transaction | Roommate Accounting
+    New Expense | Roommate Accounting
 {% endblock %}
 
 {% block content %}
-<h2>Add a Transaction</h2>
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                {{ message }}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
 <!-- Add reCAPTCHA script in the head -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<div class="container">
+    <h2>Add a New Expense</h2>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-<form action="/transaction/add_transaction/" method="post">
-    {% csrf_token %}
-    
-    <label for="creditor">Who did you borrow from?</label>
-    <select name="creditor" id="creditor" required>
-        {% for user in users %}
-            {% if user != request.user %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endif %}
-        {% endfor %}
-    </select>
-    <br><br>
+    <form action="/transaction/add_transaction/" method="post" class="expense-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="paid_by">Paid by:</label>
+            <select name="paid_by" id="paid_by" required>
+                <option value="{{ request.user.id }}" selected>Me ({{ request.user.username }})</option>
+                {% for user in all_users %}
+                    {% if user != request.user %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
 
-    <label for="amount">Amount ($)</label>
-    <input type="number" name="amount" id="amount" step="0.01" min="0" required>
-    <br><br>
+        <div class="form-group">
+            <label for="amount">Amount ($)</label>
+            <input type="number" name="amount" id="amount" step="0.01" min="0" required>
+        </div>
 
-    <label for="description">Description (optional)</label>
-    <input type="text" name="description" id="description" maxlength="255">
-    <br><br>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description" maxlength="255" placeholder="What was this expense for?">
+        </div>
 
-    <!-- Add reCAPTCHA widget before the submit button -->
-    <div class="g-recaptcha" data-sitekey="6LcRqTcrAAAAAFwHjsvUMmqK0Z4ygtPIJLMvZa_B"></div>
-    <br>
+        <div class="form-group">
+            <label>Shared with:</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="select-all" class="share-checkbox">
+                    <label for="select-all">Select All</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" 
+                           name="shared_with" 
+                           value="{{ request.user.id }}" 
+                           id="user-{{ request.user.id }}"
+                           class="share-checkbox">
+                    <label for="user-{{ request.user.id }}">Me ({{ request.user.username }})</label>
+                </div>
+                {% for user in all_users %}
+                    {% if user != request.user %}
+                        <div class="checkbox-item">
+                            <input type="checkbox" 
+                                   name="shared_with" 
+                                   value="{{ user.id }}" 
+                                   id="user-{{ user.id }}"
+                                   class="share-checkbox">
+                            <label for="user-{{ user.id }}">{{ user.username }}</label>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="success-message" style="display: none; color: green; margin-top: 10px;">
+                Successfully added shared expense!
+            </div>
+        </div>
 
-    <button type="submit">Add Transaction</button>
-</form>
+        <!-- Add reCAPTCHA widget before the submit button -->
+        <div class="g-recaptcha" data-sitekey="6LcRqTcrAAAAAFwHjsvUMmqK0Z4ygtPIJLMvZa_B"></div>
+        <br>
+        <div class="form-group">
+            <button type="submit" class="submit-button">Add Expense</button>
+        </div>
+    </form>
+</div>
 
+<style>
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
+.expense-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group select,
+.form-group input[type="number"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.checkbox-group {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.checkbox-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.submit-button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #4a0072;
+}
+
+.messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('select-all');
+    const shareCheckboxes = document.querySelectorAll('.share-checkbox:not(#select-all)');
+
+    selectAllCheckbox.addEventListener('change', function() {
+        shareCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    shareCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(shareCheckboxes).every(cb => cb.checked);
+            selectAllCheckbox.checked = allChecked;
+        });
+    });
+
+    // Auto-update shared_with when paid_by changes
+    const paidBySelect = document.getElementById('paid_by');
+    paidBySelect.addEventListener('change', function() {
+        const selectedUserId = this.value;
+        shareCheckboxes.forEach(checkbox => {
+            if (checkbox.value === selectedUserId) {
+                checkbox.checked = true;
+            }
+        });
+    });
+});
+</script>
 
 {% endblock %}

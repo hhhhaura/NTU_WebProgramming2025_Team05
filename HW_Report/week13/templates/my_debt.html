@@ -6,6 +6,15 @@
 
 {% block content %}
     <h1>My Debts</h1>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <div class="debt-container">
         <div class="debt-section">
             <h2>Money I Owe</h2>

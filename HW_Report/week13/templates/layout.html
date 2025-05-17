@@ -18,7 +18,7 @@
                 <span title="Home">🏠 Home </span>
             </a> | 
             <a href="/transaction/add_transaction/">
-                <span title="Pay">💸 Pay </span>
+                <span title="New Expense">💸 New Expense </span>
             </a> | 
             <a href="/user/namelist">
                 <span title="Roomates">👥 Roommates </span>
@@ -36,15 +36,15 @@
                     <span title="Notifications" class="notification-icon">📬</span>
                     <span id="notification-counter" class="notification-counter"></span>
                 </a>
-                <form class="logout" action="/user/logout/" method="post">
+                <form class="logout" action="{% url 'account_logout' %}" method="post">
                     {% csrf_token %} 
                     <button class="logout-button" title="Logout">👋 Logout </button>
                 </form>
             {% else %}
-                <a href="/user/signup/">
+                <a href="{% url 'account_signup' %}">
                     <span title="Signup">🌱 Signup </span>
                 </a> | 
-                <a href="/user/login/">
+                <a href="{% url 'account_login' %}">
                     <span title="Login">🔐 Login </span>
                 </a>
             {% endif %}

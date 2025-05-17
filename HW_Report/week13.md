@@ -8,3 +8,4 @@
 * added email notification system
 * use django-allauth for registration, email verification and login, User Registration, Login and Logout, Password Reset and Change, Email Verification, Social Authentication, OAuth and OAuth2, Account Management: 
 
+

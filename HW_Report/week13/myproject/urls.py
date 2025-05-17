@@ -26,5 +26,5 @@ urlpatterns = [
     path('api/', include('API.urls')),
     path('transaction/', include('Transaction.urls')),
     path('user/', include('User.urls')),
-    path('', views.homepage),  # Assuming you have a home view
+    path('', views.homepage, name='home'),  # Named URL pattern for homepage
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

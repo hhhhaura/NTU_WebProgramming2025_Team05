@@ -25,14 +25,13 @@ class ProfileForm(forms.ModelForm):
     
     class Meta:
         model = Profile
-        fields = ('bio', 'location', 'birth_date', 'avatar', 'phone_number', 'preferred_payment_method')
+        fields = ('bio', 'birth_date', 'phone_number', 'preferred_payment_method')
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
             'preferred_payment_method': forms.Select(choices=[
                 ('', 'Select payment method'),
                 ('bank_transfer', 'Bank Transfer'),
+                ('line_pay', 'Line Pay'),
                 ('cash', 'Cash'),
-                ('venmo', 'Venmo'),
-                ('paypal', 'PayPal'),
             ])
         } 

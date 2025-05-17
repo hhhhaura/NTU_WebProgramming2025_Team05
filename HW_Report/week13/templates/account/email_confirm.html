@@ -1,0 +1,46 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Confirm Email Address" %}{% endblock %}
+
+{% block inner_content %}
+<div class="verification-container">
+    <div class="verification-icon">
+        {% if confirmation %}
+            🎉
+        {% else %}
+            ❌
+        {% endif %}
+    </div>
+
+    <h1 class="mb-4">{% trans "Confirm Email Address" %}</h1>
+
+    <div class="verification-message">
+        {% if confirmation %}
+            {% user_display confirmation.email_address.user as user_display %}
+            <div class="confirmation-success">
+                <div class="confirmation-content">
+                    <p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <strong>{{ email }}</strong> is your email address.{% endblocktrans %}</p>
+
+                    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg">{% trans 'Confirm' %}</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="confirmation-error">
+                <div class="error-icon">⚠️</div>
+                <h2>{% trans "Invalid Confirmation Link" %}</h2>
+                <p>{% trans "This email confirmation link has expired or is invalid. Please request a new verification email by clicking the button below." %}</p>
+                
+                <div class="verification-actions">
+                    <a href="{% url 'account_email' %}" class="btn btn-primary">{% trans "Request New Verification" %}</a>
+                    <a href="/" class="btn btn-secondary">{% trans "Return to Home" %}</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

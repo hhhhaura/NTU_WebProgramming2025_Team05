@@ -627,3 +627,464 @@ ul.roommate-list li {
     gap: 0.25rem;
     color: #4caf50;
 }
+
+/* Authentication Pages */
+.login-container,
+.signup-container,
+.logout-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h1,
+.signup-container h1,
+.logout-container h1 {
+    color: #6a1b9a;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.login-container form,
+.signup-container form,
+.logout-container form {
+    margin-top: 1.5rem;
+}
+
+.login-container .form-group,
+.signup-container .form-group {
+    margin-bottom: 1rem;
+}
+
+.login-container label,
+.signup-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.login-container input[type="text"],
+.login-container input[type="email"],
+.login-container input[type="password"],
+.signup-container input[type="text"],
+.signup-container input[type="email"],
+.signup-container input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.login-container button,
+.signup-container button,
+.logout-container button {
+    background-color: #6a1b9a;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-container button:hover,
+.signup-container button:hover,
+.logout-container button:hover {
+    background-color: #4a0072;
+}
+
+.login-container a,
+.signup-container a {
+    color: #6a1b9a;
+    text-decoration: none;
+}
+
+.login-container a:hover,
+.signup-container a:hover {
+    text-decoration: underline;
+}
+
+.errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.socialaccount_ballot {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.login-or,
+.signup-or {
+    position: relative;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.login-or:before,
+.signup-or:before {
+    content: "or";
+    background: white;
+    padding: 0 10px;
+    color: #666;
+    position: relative;
+    z-index: 1;
+}
+
+.login-or:after,
+.signup-or:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #ddd;
+    z-index: 0;
+}
+
+/* Email Verification Page */
+.verification-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.verification-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.verification-message {
+    margin-top: 2rem;
+}
+
+.verification-message p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.verification-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.step:hover {
+    transform: translateX(5px);
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background-color: #6a1b9a;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.step-text {
+    color: #333;
+    font-weight: 500;
+}
+
+.verification-note {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.verification-note p {
+    color: #856404;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.verification-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.verification-actions .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.verification-actions .btn-primary {
+    background-color: #6a1b9a;
+    color: white;
+}
+
+.verification-actions .btn-primary:hover {
+    background-color: #4a0072;
+}
+
+.verification-actions .btn-secondary {
+    background-color: #f8f9fa;
+    color: #6a1b9a;
+    border: 1px solid #6a1b9a;
+}
+
+.verification-actions .btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+/* Email Confirmation Page */
+.confirmation-success {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f0fdf4;
+    border-radius: 8px;
+    margin: 2rem 0;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirmation-content {
+    width: 100%;
+    text-align: center;
+}
+
+.confirmation-success p {
+    font-size: 1.2rem;
+    color: #166534;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.confirmation-success strong {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.confirmation-success form {
+    margin: 0 auto;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    text-align: center;
+    width: 100%;
+}
+
+.confirmation-success .btn-lg {
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    min-width: 250px;
+    background: linear-gradient(45deg, #6a1b9a, #9c27b0);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.confirmation-success .btn-lg:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(106, 27, 154, 0.3);
+}
+
+.confirmation-success .btn-lg:active {
+    transform: translateY(1px);
+}
+
+/* Add a subtle shine effect on hover */
+.confirmation-success .btn-lg::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.confirmation-success .btn-lg:hover::after {
+    opacity: 1;
+    animation: shine 1.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: rotate(45deg) translateX(-100%);
+    }
+    100% {
+        transform: rotate(45deg) translateX(100%);
+    }
+}
+
+.confirmation-error {
+    text-align: center;
+    padding: 2rem;
+    background-color: #fef2f2;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.confirmation-error .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.confirmation-error h2 {
+    color: #991b1b;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.confirmation-error p {
+    color: #7f1d1d;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    min-width: 200px;
+}
+
+/* Enhance existing verification container styles */
+.verification-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.verification-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #6a1b9a, #9c27b0);
+}
+
+.verification-icon {
+    font-size: 5rem;
+    margin: 1rem 0 2rem;
+}
+
+/* Success animation */
+.verification-container:has(.confirmation-success) .verification-icon {
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+}
+
+/* Error animation */
+.verification-container:has(.confirmation-error) .verification-icon {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+    background: linear-gradient(to right, #6a1b9a, #9c27b0);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(106, 27, 154, 0.2);
+}
+
+.btn-secondary {
+    background: white;
+    border: 2px solid #6a1b9a;
+    color: #6a1b9a;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #f3e5f5;
+    transform: translateY(-2px);
+}

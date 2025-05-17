@@ -5,7 +5,7 @@ from User.forms import UserForm, ProfileForm
 from django.db import transaction
 
 
-@login_required(login_url="/user/login/")
+@login_required(login_url="account_login")
 @transaction.atomic
 def homepage(request):
     if request.method == 'POST':
