@@ -70,14 +70,14 @@
             toggleBtn.textContent = isHidden ? 'Hide History' : 'Show History';
         });
 
-        // Initialize PixiJS chart when the window loads
-        window.addEventListener('load', () => {
-            if (typeof initPixiChart === 'function') {
-                initPixiChart().catch(error => {
-                    console.error('Failed to initialize PixiJS chart:', error);
-                });
-            } else {
-                console.error('initPixiChart function not found');
+        // Initialize PixiJS chart when the DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                console.log('Initializing PixiJS chart...');
+                await initPixiChart();
+                console.log('PixiJS chart initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize PixiJS chart:', error);
             }
         });
     </script>
