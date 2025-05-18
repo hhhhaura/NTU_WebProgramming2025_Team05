@@ -1,9 +1,9 @@
 async function initPixiChart() {
-    const app = new PIXI.Application();
-    await app.init({
+    const app = new PIXI.Application({
         height: 300,
         backgroundColor: 0xf4f4f4,
         resolution: window.devicePixelRatio || 1,
+        width: document.getElementById('pixiCanvasContainer').clientWidth
     });
 
     // Clear the container before appending the new canvas
@@ -12,7 +12,7 @@ async function initPixiChart() {
     container.appendChild(app.view);
 
     try {
-        const response = await fetch('/api/debts/total/');  // Added trailing slash
+        const response = await fetch('/api/debts/total/');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -53,6 +53,7 @@ async function initPixiChart() {
         scaleToFitContainer(app.stage, app.screen.width, app.screen.height);
     } catch (error) {
         console.error('Error in initPixiChart:', error);
+        throw error; // Re-throw the error for proper error handling
     }
 }
 

@@ -10,68 +10,75 @@ function formatDate(dateString) {
 }
 
 async function fetchTransactions() {
-    const response = await fetch('/api/transactions/');
-    const data = await response.json();
-    const tbody = document.querySelector('#historySection tbody');
-    tbody.innerHTML = '';
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No transactions to display</td></tr>';
-    } else {
-        data.forEach(trans => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${trans.creditor}</td>
-                    <td>${trans.debtor}</td>
-                    <td>${trans.amount}</td>
-                    <td>${formatDate(trans.created_at)}</td>
-                    <td><a href="/transaction/history/${trans.slug}">${trans.slug}</a></td>
-                </tr>
-            `;
-        });
+    try {
+        const response = await fetch('/api/transactions/');
+        const data = await response.json();
+        updateTransactionTable(data);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
     }
 }
 
 async function fetchDebts() {
-    const response = await fetch('/api/debts/');
-    const data = await response.json();
-    const tbody = document.querySelector('#debtSection tbody');
+    try {
+        const response = await fetch('/api/debts/');
+        const data = await response.json();
+        const tbody = document.querySelector('#debtSection tbody');
+        tbody.innerHTML = '';
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3">No debts to display</td></tr>';
+        } else {
+            data.forEach(debt => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${debt.debtor}</td>
+                        <td>${debt.creditor}</td>
+                        <td>$${debt.amount}</td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching debts:', error);
+    }
+}
+
+function updateTransactionTable(transactions) {
+    const tbody = document.querySelector('#historySection tbody');
     tbody.innerHTML = '';
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3">No debts to display</td></tr>';
+    if (transactions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No transactions to display</td></tr>';
     } else {
-        data.forEach(debt => {
+        transactions.forEach(transaction => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${debt.debtor}</td>
-                    <td>${debt.creditor}</td>
-                    <td>$${debt.amount}</td>
+                    <td>${transaction.creditor}</td>
+                    <td>${transaction.debtor}</td>
+                    <td>$${transaction.amount}</td>
+                    <td>${new Date(transaction.created_at).toLocaleString()}</td>
+                    <td>${transaction.id}</td>
                 </tr>
             `;
         });
     }
 }
 
-const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-const wsHost = window.location.host === "localhost:8001" ? "localhost:8001" : "hhhhaura.pythonanywhere.com";
-const ws = new WebSocket(`${wsProtocol}://${wsHost}/ws/transactions/`);
-
-ws.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    if (data.type === "update") {
-        fetchTransactions();
-        fetchDebts();
-        initPixiChart();
+// Poll for updates every 5 seconds
+async function pollForUpdates() {
+    try {
+        await Promise.all([
+            fetchTransactions(),
+            fetchDebts(),
+            initPixiChart()
+        ]);
+    } catch (error) {
+        console.error('Error polling for updates:', error);
     }
-};
+}
 
-ws.onopen = () => {
-    console.log("WebSocket connection opened.");
-};
-
-ws.onclose = () => {
-    console.log("WebSocket connection closed.");
-};
-
-// Fetch immediately on load
-fetchTransactions();
-fetchDebts();
+// Initial load
+document.addEventListener('DOMContentLoaded', () => {
+    pollForUpdates();
+    // Set up polling interval
+    setInterval(pollForUpdates, 5000);
+});
