@@ -28,7 +28,7 @@
     <!-- Debt Visualization -->
     <section id="visualizationSection" style="margin-top: 40px;">
         <h3>Debt Visualization</h3>
-        <div id="pixiCanvasContainer"></div>
+        <div id="pixiCanvasContainer" style="width: 100%; height: 300px; background-color: #f4f4f4;"></div>
     </section>
     
     <!-- Show/Hide History Button -->
@@ -53,8 +53,11 @@
         </table>
     </section>
     
-    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <!-- Load PixiJS first -->
+    <script src="https://pixijs.download/v7.4.0/pixi.min.js"></script>
+    <!-- Then load our custom scripts -->
     <script src="{% static 'js/pixi_chart.js' %}"></script>
+    <script src="{% static 'js/update_history.js' %}"></script>
     
     <script>
         // Toggle History Section
@@ -66,8 +69,17 @@
             historySection.style.display = isHidden ? 'block' : 'none';
             toggleBtn.textContent = isHidden ? 'Hide History' : 'Show History';
         });
-    </script>
-    <script src="{% static 'js/update_history.js' %}"></script>
 
+        // Initialize PixiJS chart when the window loads
+        window.addEventListener('load', () => {
+            if (typeof initPixiChart === 'function') {
+                initPixiChart().catch(error => {
+                    console.error('Failed to initialize PixiJS chart:', error);
+                });
+            } else {
+                console.error('initPixiChart function not found');
+            }
+        });
+    </script>
 </div>
 {% endblock %}
