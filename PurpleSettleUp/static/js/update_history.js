@@ -52,7 +52,8 @@ async function fetchDebts() {
 }
 
 const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
-const ws = new WebSocket(`${wsProtocol}://${window.location.host}/ws/transactions/`);
+const wsHost = window.location.host === "localhost:8001" ? "localhost:8001" : "hhhhaura.pythonanywhere.com";
+const ws = new WebSocket(`${wsProtocol}://${wsHost}/ws/transactions/`);
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data);
