@@ -1,11 +1,164 @@
-# Team 5 Week 13 Report
+# 第五組 第13週報告
+## 快速亮點整理
 
-## Quick Overview
-* Added Google reCAPTCHA v2 integration to the transaction form for enhanced security. This includes adding the reCAPTCHA widget to the form template and implementing server-side verification in views.py to prevent automated submissions.
+本週實作重點：
+1. 表單功能強化：
+   * 新增 Google reCAPTCHA v2 整合至交易表單，增強安全性
+   * 實作取消債務按鈕功能
+   * 首頁新增個人資料顯示
+   * 完整實作 GET/POST 請求處理流程
 
-* add cancel debt button
-* add profile at home page
-* added email notification system
-* use django-allauth for registration, email verification and login, User Registration, Login and Logout, Password Reset and Change, Email Verification, Social Authentication, OAuth and OAuth2, Account Management: 
+2. Session與認證系統：
+   * 使用 django-allauth 實現完整的認證系統
+   * 實作 Session 基礎的使用者狀態管理
+   * 整合 Message Framework 提供使用者反饋
+
+3. 電子郵件系統：
+   * 實作 SMTP 電子郵件發送功能
+   * 完整的電子郵件驗證流程
+   * 自動化通知系統（交易、付款確認等）
+
+4. 第三方整合：
+   * Google OAuth 登入整合
+   * 社交帳號連結功能
+   * 使用 PythonAnywhere 進行部署
+
+## 表單處理實作（對應課程：601-612）
+
+### GET請求處理（601-603）
+- 實作各種表單的GET請求顯示：
+  * 註冊表單
+  * 登入表單
+  * 個人資料表單
+  * 交易表單
+- 實作請求參數處理
+- 實作查詢字串處理
+
+### 資料庫整合（604-606）
+- 建立與資料庫的連接：
+  * Profile 模型：使用者擴展資料
+  * Transaction 模型：交易記錄
+  * Notification 模型：通知系統
+  * PaymentVerification 模型：付款驗證
+- 實作資料的新增、讀取、更新和刪除
+- 在前端動態顯示資料庫資料
+
+### POST請求處理（607-608）
+- 實作表單提交功能
+- 實作資料驗證
+- 實作 CSRF 保護機制
+- 實作檔案上傳功能
+
+### 自定義表單（609-611）
+1. 使用者表單：
+   - 自定義 SignUpForm
+   - 自定義 UserForm
+   - 自定義 ProfileForm
+   - 使用 ModelForm 自動生成表單
+
+2. 交易表單：
+   - 支出新增表單
+   - 共同支出分配表單
+   - 付款驗證表單
+
+### 安全機制（612）
+1. CSRF 保護：
+   - 所有表單加入 {% csrf_token %}
+   - 實作 CSRF 中間件
+   - 使用 @csrf_protect 裝飾器
+
+2. Google reCAPTCHA：
+   - 整合於重要表單
+   - 實作機器人驗證
+   - 伺服器端驗證
+
+### 電子郵件功能（610）
+- 使用 SMTP 取代 Mailgun
+- 實作以下通知：
+  * 帳號驗證郵件
+  * 付款確認通知
+  * 債務提醒
+  * 系統通知
+
+## Session管理（對應課程：701-707）
+
+### Session基礎（701）
+- 實作 Django session 中間件
+- 設定 session 存活時間
+- 實作 session 資料加密
+
+### 登入功能（702-703）
+- 實作使用者登入流程
+- 實作登入狀態保持
+- 實作使用者資訊顯示
+- 實作登出功能
+
+### 系統訊息（704）
+- 實作 Django messages framework
+- 實作各種通知類型：
+  * 成功訊息
+  * 錯誤訊息
+  * 警告訊息
+  * 資訊提示
+
+### 使用者驗證（705-707）
+- 實作 Django 認證系統
+- 實作權限控制
+- 實作使用者關聯功能
+- 實作個人化內容
+
+## 使用者註冊系統（對應課程：801-805）
+
+### 註冊流程（801）
+- 實作基本註冊功能
+- 實作資料驗證
+- 實作密碼強度檢查
+- 實作帳號唯一性檢查
+
+### 電子郵件驗證（802）
+- 實作驗證郵件發送
+- 實作驗證連結生成
+- 實作郵件範本
+- 實作重發驗證郵件功能
+
+### 個人資料管理（803）
+- 實作個人資料更新
+- 實作密碼修改
+- 實作個人化設定
+- 實作隱私控制
+
+### 系統部署（804）
+- 成功部署至 PythonAnywhere
+- 設定 MySQL 資料庫
+- 配置郵件服務
+- 設定靜態檔案
+- 設定 HTTPS
+
+### 第三方登入（805）
+- 實作 Google OAuth 登入
+- 實作社交帳號連結
+- 實作個人資料同步
+
+## 分工情形
+
+- 黃邦維 (b10902039)：25%
+  - 表單實作
+  - 資料庫整合
+  - 安全功能
+
+- 鄭允臻 (b11902010)：25%
+  - Session管理
+  - 使用者認證
+  - 電子郵件系統
+
+- 黃梓宏 (b11902023)：25%
+  - 使用者註冊
+  - 個人資料管理
+  - 前端表單
+
+- 吳柏毅 (b11902127)：25%
+  - 第三方認證
+  - 系統部署
+  - 文件撰寫
 
 
