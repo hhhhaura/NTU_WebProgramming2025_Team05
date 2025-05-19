@@ -1,6 +1,8 @@
 # 第五組 第13週報告
 ## 快速亮點整理
 
+可以在 hhhhaura.pythonanywhere.com 試用網站
+
 本週實作重點：
 1. 表單功能強化：
    * 新增 Google reCAPTCHA v2 整合至交易表單，增強安全性
